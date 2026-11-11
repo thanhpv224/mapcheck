@@ -295,19 +295,17 @@
     </div>
 
     <!-- Right Quick Actions -->
-    <div class="flex items-center space-x-1 sm:space-x-2 flex-nowrap">
-      <!-- Cloud Sync Google Sheet Button (Hiện cả trên Mobile dưới dạng Icon + Chữ gọn) -->
-      <button onclick="syncDataFromGoogleSheet()" id="btnSyncGoogleSheet" class="flex px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold bg-emerald-700/90 hover:bg-emerald-600 text-white rounded-lg border border-emerald-400/40 items-center gap-1 transition shadow-sm flex-shrink-0" title="Tải toàn bộ dữ liệu mới nhất từ Google Sheet về Bản đồ">
-        <i class="fa-solid fa-cloud-arrow-down text-emerald-300 text-xs"></i>
+    <div class="flex items-center space-x-1.5 sm:space-x-2 flex-nowrap">
+      <!-- Cloud Sync Google Sheet Button (Trên Mobile chỉ hiển thị Icon tròn gọn đẹp) -->
+      <button onclick="syncDataFromGoogleSheet()" id="btnSyncGoogleSheet" class="w-8 h-8 sm:w-auto sm:h-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center text-xs font-bold bg-emerald-700/90 hover:bg-emerald-600 text-white rounded-lg border border-emerald-400/40 gap-1.5 transition shadow-sm flex-shrink-0" title="Tải toàn bộ dữ liệu mới nhất từ Google Sheet về Bản đồ">
+        <i class="fa-solid fa-cloud-arrow-down text-emerald-300 text-sm sm:text-xs"></i>
         <span class="hidden md:inline">Đồng bộ Sheet</span>
-        <span class="md:hidden">Đồng bộ</span>
       </button>
 
-      <!-- Cloud Upload Google Sheet Button (Hiện cả trên Mobile dưới dạng Icon + Chữ gọn) -->
-      <button onclick="saveDataToGoogleSheet()" id="btnSaveGoogleSheet" class="flex px-2 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold bg-teal-700/90 hover:bg-teal-600 text-white rounded-lg border border-teal-400/40 items-center gap-1 transition shadow-sm flex-shrink-0" title="Lưu danh sách thửa đất hiện tại lên Google Sheet">
-        <i class="fa-solid fa-cloud-arrow-up text-teal-300 text-xs"></i>
+      <!-- Cloud Upload Google Sheet Button (Trên Mobile chỉ hiển thị Icon tròn gọn đẹp) -->
+      <button onclick="saveDataToGoogleSheet()" id="btnSaveGoogleSheet" class="w-8 h-8 sm:w-auto sm:h-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center text-xs font-bold bg-teal-700/90 hover:bg-teal-600 text-white rounded-lg border border-teal-400/40 gap-1.5 transition shadow-sm flex-shrink-0" title="Lưu danh sách thửa đất hiện tại lên Google Sheet">
+        <i class="fa-solid fa-cloud-arrow-up text-teal-300 text-sm sm:text-xs"></i>
         <span class="hidden md:inline">Lưu lên Sheet</span>
-        <span class="md:hidden">Lưu Sheet</span>
       </button>
 
       <!-- Export Excel Button in Header -->
