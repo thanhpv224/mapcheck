@@ -1,0 +1,11 @@
+# Backup and scratch files
+BK_*
+*Copy*
+*.txt
+index - *.html
+map.app.html
+Map.V2.html
+node_modules/
+.vercel/
+.DS_Store
+Thumbs.db

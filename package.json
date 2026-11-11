@@ -1,0 +1,9 @@
+{
+  "name": "map-thanhpv-2026",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Hệ thống Bản đồ GIS, Phân tích Thửa đất, Tính lộ trình giao thông và Định vị GPS (Map.Thanhpv.2026)",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
