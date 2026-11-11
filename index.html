@@ -280,22 +280,22 @@
     </div>
 
     <!-- Center Module Switcher (1. Tìm điểm trung tâm và đường đi | 2. Chỉnh sửa bản đồ) -->
-    <div class="flex items-center bg-slate-800/90 p-1 rounded-xl border border-slate-700 shadow-inner flex-nowrap overflow-x-auto custom-scroll max-w-[55%] md:max-w-full">
-      <button onclick="switchMainModule('multi')" id="modBtn-multi" class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 transition-all bg-rose-600 text-white shadow-md whitespace-nowrap">
-        <i class="fa-solid fa-star text-yellow-300"></i>
+    <div class="flex items-center bg-slate-800/90 p-0.5 sm:p-1 rounded-xl border border-slate-700 shadow-inner flex-nowrap overflow-x-auto custom-scroll max-w-[50%] sm:max-w-none flex-shrink-0">
+      <button onclick="switchMainModule('multi')" id="modBtn-multi" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all bg-rose-600 text-white shadow-md whitespace-nowrap">
+        <i class="fa-solid fa-star text-yellow-300 text-[11px] sm:text-xs"></i>
         <span class="hidden sm:inline">1. Điểm TT & Tuyến</span>
-        <span class="sm:hidden">1. Điểm TT</span>
-        <span id="headerParcelCountBadge" class="ml-1 px-1.5 py-0.2 text-[10px] rounded-full bg-white/20 text-white border border-white/30 font-mono">3</span>
+        <span class="sm:hidden text-[11px]">1. Điểm TT</span>
+        <span id="headerParcelCountBadge" class="ml-0.5 sm:ml-1 px-1 sm:px-1.5 py-0.2 text-[9px] sm:text-[10px] rounded-full bg-white/20 text-white border border-white/30 font-mono">3</span>
       </button>
-      <button onclick="switchMainModule('editor')" id="modBtn-editor" class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 transition-all text-slate-300 hover:text-white hover:bg-slate-700/60 whitespace-nowrap">
-        <i class="fa-solid fa-draw-polygon text-emerald-400"></i>
+      <button onclick="switchMainModule('editor')" id="modBtn-editor" class="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 transition-all text-slate-300 hover:text-white hover:bg-slate-700/60 whitespace-nowrap">
+        <i class="fa-solid fa-draw-polygon text-emerald-400 text-[11px] sm:text-xs"></i>
         <span class="hidden sm:inline">2. Sửa bản đồ</span>
-        <span class="sm:hidden">2. Sửa</span>
+        <span class="sm:hidden text-[11px]">2. Sửa</span>
       </button>
     </div>
 
     <!-- Right Quick Actions -->
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-1.5 sm:space-x-2 flex-nowrap">
       <!-- Cloud Sync Google Sheet Button -->
       <button onclick="syncDataFromGoogleSheet()" id="btnSyncGoogleSheet" class="hidden sm:flex px-2.5 py-1.5 text-xs font-bold bg-emerald-700/90 hover:bg-emerald-600 text-white rounded-lg border border-emerald-400/40 items-center gap-1.5 transition shadow-sm" title="Tải toàn bộ dữ liệu mới nhất từ Google Sheet về Bản đồ">
         <i class="fa-solid fa-cloud-arrow-down text-emerald-300"></i>
@@ -320,36 +320,36 @@
         <span>Lưu vào DS Thửa</span>
       </button>
 
-      <!-- Scroll to Footer Guide Button -->
-      <a href="#appFooterGuide" class="px-2.5 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-lg border border-slate-700 flex items-center gap-1.5 transition shadow-sm" title="Cuộn xuống xem Mô tả & Hướng dẫn sử dụng ở chân trang">
+      <!-- Scroll to Footer Guide Button (Ẩn trên mobile để nhường chỗ) -->
+      <a href="#appFooterGuide" class="hidden sm:flex px-2.5 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-lg border border-slate-700 items-center gap-1.5 transition shadow-sm" title="Cuộn xuống xem Mô tả & Hướng dẫn sử dụng ở chân trang">
         <i class="fa-solid fa-circle-question"></i>
         <span class="hidden xl:inline">Hướng dẫn</span>
       </a>
 
-      <!-- Toggle All Panels (Zen Full Map Mode) -->
-      <button onclick="toggleAllPanelsSlide()" id="btnToggleAllPanels" class="px-2.5 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-lg border border-slate-700 flex items-center gap-1.5 transition shadow-sm" title="Thu gọn hoặc mở rộng tất cả các menu để xem bản đồ toàn màn hình">
+      <!-- Toggle All Panels (Zen Full Map Mode - Ẩn trên mobile vì đã có nút Menu) -->
+      <button onclick="toggleAllPanelsSlide()" id="btnToggleAllPanels" class="hidden sm:flex px-2.5 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-lg border border-slate-700 items-center gap-1.5 transition shadow-sm" title="Thu gọn hoặc mở rộng tất cả các menu để xem bản đồ toàn màn hình">
         <i id="iconToggleAllPanels" class="fa-solid fa-maximize"></i>
         <span class="hidden xl:inline" id="txtToggleAllPanels">Thu gọn menu</span>
       </button>
 
       <!-- Theme Toggle -->
-      <button id="themeToggle" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition" title="Chuyển chế độ Sáng / Tối">
-        <i class="fa-solid fa-moon dark:hidden"></i>
-        <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
+      <button id="themeToggle" class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 transition" title="Chuyển chế độ Sáng / Tối">
+        <i class="fa-solid fa-moon dark:hidden text-xs sm:text-sm"></i>
+        <i class="fa-solid fa-sun hidden dark:inline text-amber-400 text-xs sm:text-sm"></i>
       </button>
 
       <!-- User Account Info & Logout Button -->
-      <div id="headerUserBox" class="hidden flex items-center gap-1.5 pl-1.5 border-l border-slate-700">
+      <div id="headerUserBox" class="hidden flex items-center gap-1 sm:gap-1.5 pl-1 sm:pl-1.5 border-l border-slate-700">
         <!-- Admin Sheet Switcher Dropdown (Chỉ hiện khi là Quản trị viên) -->
-        <div id="adminSheetSwitchBox" class="hidden items-center gap-1 bg-slate-800/90 py-1 px-2 rounded-lg border border-amber-500/40" title="Chuyển đổi nhanh sheet dữ liệu đang quản lý">
-          <i class="fa-solid fa-table-list text-[10px] text-amber-400"></i>
-          <select id="adminSheetSelector" onchange="switchAdminTargetSheet(this.value)" class="bg-transparent text-[11px] font-mono font-bold text-amber-300 outline-none cursor-pointer">
+        <div id="adminSheetSwitchBox" class="hidden items-center gap-1 bg-slate-800/90 py-1 px-1.5 sm:px-2 rounded-lg border border-amber-500/40 max-w-[130px] sm:max-w-[210px] md:max-w-none" title="Chuyển đổi nhanh sheet dữ liệu đang quản lý">
+          <i class="fa-solid fa-table-list text-[10px] text-amber-400 flex-shrink-0"></i>
+          <select id="adminSheetSelector" onchange="switchAdminTargetSheet(this.value)" class="bg-transparent text-[10px] sm:text-[11px] font-mono font-bold text-amber-300 outline-none cursor-pointer max-w-[105px] sm:max-w-none truncate">
             <option value="data_admin">Đang tải danh sách sheet...</option>
           </select>
         </div>
 
-        <div class="flex items-center gap-1.5 bg-slate-800/90 py-1 px-2 rounded-lg border border-slate-700 cursor-pointer" onclick="openGasConfigModal()" title="Bấm để xem cấu hình kết nối Google Sheet">
-          <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-500 to-indigo-600 text-white flex items-center justify-center text-[10px] font-black shadow-xs">
+        <div class="flex items-center gap-1.5 bg-slate-800/90 py-1 px-1.5 sm:px-2 rounded-lg border border-slate-700 cursor-pointer" onclick="openGasConfigModal()" title="Bấm để xem cấu hình kết nối Google Sheet">
+          <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-500 to-indigo-600 text-white flex items-center justify-center text-[10px] font-black shadow-xs flex-shrink-0">
             <span id="headerUserInitial">A</span>
           </div>
           <div class="hidden xl:flex flex-col text-left leading-none">
@@ -362,9 +362,9 @@
         </button>
       </div>
 
-      <!-- Mobile Sidebar Toggle -->
-      <button onclick="toggleLeftSidebar()" id="toggleSidebarMobile" class="md:hidden w-8 h-8 flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800 text-slate-200" title="Đóng/Mở bảng điều khiển trái">
-        <i class="fa-solid fa-bars"></i>
+      <!-- Mobile Sidebar Toggle (Nút Menu 3 sọc cực kỳ quan trọng trên điện thoại) -->
+      <button onclick="toggleLeftSidebar()" id="toggleSidebarMobile" class="md:hidden w-8 h-8 flex items-center justify-center rounded-lg border border-emerald-500/50 bg-emerald-700/80 hover:bg-emerald-600 text-white shadow-md flex-shrink-0 transition" title="Đóng/Mở bảng điều khiển chức năng bên trái">
+        <i class="fa-solid fa-bars text-sm"></i>
       </button>
     </div>
   </header>
