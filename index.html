@@ -256,6 +256,46 @@
     .slide-bottom-panel {
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    /* Pulsing animation for defective & outlier parcels (Block 4) */
+    @keyframes errorPolygonPulse {
+      0% {
+        stroke-width: 2.5px;
+        stroke: #ef4444;
+        fill: #ef4444;
+        fill-opacity: 0.35;
+        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.6));
+      }
+      50% {
+        stroke-width: 6.5px;
+        stroke: #f97316;
+        fill: #f97316;
+        fill-opacity: 0.75;
+        filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.95));
+      }
+      100% {
+        stroke-width: 2.5px;
+        stroke: #ef4444;
+        fill: #ef4444;
+        fill-opacity: 0.35;
+        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.6));
+      }
+    }
+    .error-polygon-pulsing,
+    path.error-polygon-pulsing {
+      animation: errorPolygonPulse 1.25s infinite ease-in-out !important;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+    @keyframes errorPinPulse {
+      0% { transform: scale(0.85); opacity: 0.85; }
+      50% { transform: scale(1.35); opacity: 1; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.95)); }
+      100% { transform: scale(0.85); opacity: 0.85; }
+    }
+    .error-pin-anim {
+      animation: errorPinPulse 1.25s infinite ease-in-out;
+      transform-origin: center center;
+    }
   </style>
 </head>
 <body id="topPage" class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 overflow-x-hidden overflow-y-auto transition-colors duration-200">
@@ -592,20 +632,31 @@
                 <button onclick="resetFilters()" class="text-[9px] font-semibold text-rose-500 hover:text-rose-600 bg-rose-50 dark:bg-rose-950/30 px-1.5 py-0.5 rounded border border-rose-200 transition">Xóa lọc</button>
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-600 overflow-hidden">
-                  <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-1.5 py-1 border-r border-slate-300 dark:border-slate-600">CBĐB</span>
-                  <input list="dl-cbdb" id="filter-cbdb" oninput="applyFilters('cbdb')" onfocus="updateCascadingFilterOptions('cbdb')" class="w-full text-[10px] px-1.5 py-1 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200" placeholder="Tất cả...">
-                  <datalist id="dl-cbdb"></datalist>
+                <!-- Bộ lọc CBĐB -->
+                <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden relative shadow-xs focus-within:border-emerald-500">
+                  <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-1.5 py-1.5 border-r border-slate-300 dark:border-slate-600 flex-shrink-0">CBĐB</span>
+                  <select id="filter-cbdb" onchange="applyFilters('cbdb')" class="w-full text-[10px] pl-1.5 pr-6 py-1.5 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200 cursor-pointer appearance-none">
+                    <option value="">Tất cả CBĐB</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                  </div>
                 </div>
-                <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-600 overflow-hidden">
-                  <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-1.5 py-1 border-r border-slate-300 dark:border-slate-600">Đ.Mía</span>
-                  <input list="dl-diemmia" id="filter-diemmia" oninput="applyFilters('diemmia')" onfocus="updateCascadingFilterOptions('diemmia')" class="w-full text-[10px] px-1.5 py-1 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200" placeholder="Tất cả...">
-                  <datalist id="dl-diemmia"></datalist>
+
+                <!-- Bộ lọc Điểm Mía -->
+                <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden relative shadow-xs focus-within:border-emerald-500">
+                  <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-1.5 py-1.5 border-r border-slate-300 dark:border-slate-600 flex-shrink-0">Đ.Mía</span>
+                  <select id="filter-diemmia" onchange="applyFilters('diemmia')" class="w-full text-[10px] pl-1.5 pr-6 py-1.5 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200 cursor-pointer appearance-none">
+                    <option value="">Tất cả Điểm Mía</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-600 overflow-hidden">
-                <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-1.5 py-1 border-r border-slate-300 dark:border-slate-600"><i class="fa-solid fa-magnifying-glass"></i></span>
-                <input type="text" id="filter-search" oninput="applyFilters('search')" class="w-full text-[10px] px-1.5 py-1 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200" placeholder="Tìm Mã số thửa hoặc Mã ID file...">
+              <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden relative shadow-xs focus-within:border-emerald-500">
+                <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-2 py-1.5 border-r border-slate-300 dark:border-slate-600"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="filter-search" oninput="applyFilters('search')" class="w-full text-[10px] px-2 py-1.5 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200" placeholder="Tìm Mã số thửa hoặc Mã ID file...">
               </div>
             </div>
 
@@ -668,6 +719,125 @@
               <button onclick="exportSubParcelsToExcel('xls')" class="py-2.5 px-3 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition">
                 <i class="fa-solid fa-download"></i>
                 <span>Xuất land.parcel (.xls)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- BLOCK 4: QUẢN LÝ THỬA SAI - LỖI -->
+          <div class="bg-rose-50/80 dark:bg-rose-950/30 rounded-xl p-3.5 border-2 border-rose-300 dark:border-rose-800/70 space-y-3 shadow-sm">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold uppercase text-rose-900 dark:text-rose-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600 dark:text-rose-400 text-sm"></i>
+                <span>4. Quản lý thửa sai - lỗi</span>
+              </h3>
+              <span id="badgeErrorTotalCount" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-500 text-white">0 lỗi</span>
+            </div>
+
+            <!-- Thiết lập tiêu chí tính toán -->
+            <div class="bg-white/80 dark:bg-slate-800/80 p-2.5 rounded-lg border border-rose-200 dark:border-slate-600 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase">
+                  <i class="fa-solid fa-sliders text-rose-500 mr-1"></i>Tiêu chí lọc lỗi
+                </span>
+                <button type="button" onclick="resetErrorFilters()" class="text-[9px] font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-600 transition">
+                  Đặt lại
+                </button>
+              </div>
+
+              <!-- Ô nhập khoảng cách (Km) -->
+              <div class="flex items-center justify-between gap-2 text-xs">
+                <label for="errFilterMaxDistKm" class="font-semibold text-slate-600 dark:text-slate-400 text-[11px] whitespace-nowrap">
+                  Ngưỡng khoảng cách tâm (km):
+                </label>
+                <div class="flex items-center gap-1">
+                  <input type="number" id="errFilterMaxDistKm" min="1" step="1" value="5" class="w-16 px-2 py-1 text-center font-mono font-bold text-xs rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 outline-none focus:border-rose-500" title="Nhập số nguyên dương (km)">
+                  <span class="text-[11px] font-bold text-slate-500">km</span>
+                </div>
+              </div>
+
+              <!-- Bộ lọc liên kết Cán bộ địa bàn & Điểm mía -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Cán bộ địa bàn (CBĐB):</label>
+                  <select id="errFilterCbdb" onchange="applyErrorCascadingFilter('cbdb')" class="w-full px-2 py-1 text-xs rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 outline-none">
+                    <option value="">-- Tất cả CBĐB --</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Điểm mía:</label>
+                  <select id="errFilterDiemmia" onchange="applyErrorCascadingFilter('diemmia')" class="w-full px-2 py-1 text-xs rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 outline-none">
+                    <option value="">-- Tất cả Điểm mía --</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Ô tìm kiếm mã thửa trong bảng lỗi -->
+              <div>
+                <input type="text" id="errFilterSearch" placeholder="Tìm kiếm theo Mã số thửa trong danh sách lỗi..." oninput="filterErrorTableRows()" class="w-full px-2.5 py-1 text-xs rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-rose-500">
+              </div>
+
+              <!-- Nút hành động lọc lỗi -->
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button type="button" id="btnFilterGeometryErrors" onclick="runFilterGeometryErrors()" class="py-2 px-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 transition">
+                  <i class="fa-solid fa-draw-polygon"></i>
+                  <span>Lọc thửa sai</span>
+                </button>
+                <button type="button" id="btnFilterOutlierParcels" onclick="runFilterOutlierParcels()" class="py-2 px-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 transition">
+                  <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                  <span>Lọc thửa xa tâm Điểm mía</span>
+                </button>
+              </div>
+
+              <!-- Trạng thái lọc hiện tại & nút hủy -->
+              <div id="errorFilterStatusBar" class="hidden flex items-center justify-between text-[10px] px-2 py-1 bg-rose-100/80 dark:bg-rose-900/40 rounded border border-rose-300 dark:border-rose-700 text-rose-800 dark:text-rose-200 font-semibold">
+                <span id="errorFilterStatusText"><i class="fa-solid fa-circle-exclamation mr-1"></i>Đang hiển thị: Thửa sai</span>
+                <button type="button" onclick="clearErrorFilterMode()" class="text-rose-600 hover:text-rose-800 dark:text-rose-300 underline cursor-pointer">Tắt hiệu ứng lỗi</button>
+              </div>
+            </div>
+
+            <!-- Bảng danh sách thửa lỗi & Phân trang -->
+            <div class="space-y-1.5 mb-2">
+              <div class="flex items-center justify-between text-[11px] px-0.5 text-slate-600 dark:text-slate-400">
+                <span id="errorPaginationInfo" class="font-medium text-[10px]">Chưa thực hiện lọc lỗi</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="changeErrorPage(-1)" class="px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-300 transition shadow-xs" title="Trang trước">
+                    <i class="fa-solid fa-chevron-left"></i>
+                  </button>
+                  <span id="errorCurrentPageText" class="font-mono text-[10px] font-bold text-slate-800 dark:text-slate-200">0 / 0</span>
+                  <button type="button" onclick="changeErrorPage(1)" class="px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-300 transition shadow-xs" title="Trang sau">
+                    <i class="fa-solid fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto rounded-lg border border-rose-200 dark:border-rose-900/60 bg-white dark:bg-slate-800 shadow-sm max-h-[350px]">
+                <table class="w-full text-left text-[10px] whitespace-nowrap">
+                  <thead class="sticky top-0 bg-rose-100/90 dark:bg-rose-950/90 backdrop-blur text-rose-900 dark:text-rose-200 font-bold tracking-tighter shadow-sm z-10">
+                    <tr>
+                      <th class="py-1.5 px-2">Mã số</th>
+                      <th class="py-1.5 px-2">Điểm Mía</th>
+                      <th class="py-1.5 px-2">CBĐB</th>
+                      <th class="py-1.5 px-2 text-rose-600 dark:text-rose-400">Loại lỗi / Độ lệch</th>
+                      <th class="py-1.5 px-2 text-right">Diện tích (m²)</th>
+                      <th class="py-1.5 px-2 text-center"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="errorExportPreviewTbody" class="divide-y divide-slate-100 dark:divide-slate-700 font-mono">
+                    <tr>
+                      <td colspan="6" class="py-4 text-center text-slate-400 italic">
+                        Bấm "Lọc thửa sai" hoặc "Lọc thửa xa tâm Điểm mía" để phát hiện các thửa lỗi.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Nút xuất Excel danh sách thửa lỗi -->
+            <div>
+              <button type="button" onclick="exportErrorParcelsToExcel()" class="w-full py-2.5 px-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Xuất Excel Danh Sách Thửa Lỗi (.xlsx)</span>
               </button>
             </div>
           </div>
@@ -1602,6 +1772,13 @@
     let redStarCenterLayer;
     let routeLayer;
     let originMarkerLayer;
+    let errorParcelsLayer;
+
+    // State cho Quản lý Thửa sai - lỗi (Block 4)
+    let errorDetectedParcels = [];
+    let errorFilterActiveMode = null; // null | 'geometry' | 'outlier'
+    let errorPreviewCurrentPage = 1;
+    const ERROR_PREVIEW_PAGE_SIZE = 50;
 
     let subParcels = [];
     let overallCenterPoint = { lat: 19.901650, lng: 105.411850 };
@@ -1705,6 +1882,7 @@
       routeLayer = L.layerGroup().addTo(multiGroupLayer);
       originMarkerLayer = L.layerGroup().addTo(multiGroupLayer);
       redStarCenterLayer = L.layerGroup().addTo(multiGroupLayer);
+      errorParcelsLayer = L.layerGroup().addTo(multiGroupLayer);
 
       // Layer cho Thước đo khoảng cách và Tọa độ GPS thiết bị
       measureLayer = L.layerGroup().addTo(map);
@@ -3757,25 +3935,6 @@
           }
         }
       } catch (e) {}
-
-      // 3. Nếu người dùng vừa bấm lấy GPS ở tab phụ (Google Sites cô lập bộ nhớ) và quay lại tab bản đồ, kiểm tra nhanh Clipboard nếu có chuỗi GPS vừa sao chép
-      try {
-        if (navigator.clipboard && navigator.clipboard.readText) {
-          const clipText = await navigator.clipboard.readText();
-          if (clipText && clipText.startsWith('__LASUCO_GPS__:')) {
-            const parts = clipText.replace('__LASUCO_GPS__:', '').split(',');
-            const cLat = parseFloat(parts[0]);
-            const cLng = parseFloat(parts[1]);
-            const cAcc = parts[2] ? parseFloat(parts[2]) : null;
-            const cTs = parts[3] ? parseInt(parts[3], 10) : Date.now();
-            if (!isNaN(cLat) && !isNaN(cLng) && cTs > lastAppliedGpsTs && (Date.now() - cTs < 120000)) {
-              lastAppliedGpsTs = cTs;
-              try { await navigator.clipboard.writeText(`${cLat.toFixed(6)}, ${cLng.toFixed(6)}`); } catch (e) {}
-              applyReceivedGPSLocation(cLat, cLng, 'GPS điện thoại', cAcc);
-            }
-          }
-        }
-      } catch (e) {}
     }
 
     // Lắng nghe kết quả GPS trả về từ cửa sổ định vị cấp cao nhất (vượt giới hạn Iframe Google Sites)
@@ -4591,7 +4750,14 @@
 
     function deleteSubParcelByCode(code) {
       const idx = subParcels.findIndex(p => (p.code === code || p.name === code));
-      if (idx !== -1) deleteSubParcel(idx);
+      if (idx !== -1) {
+        deleteSubParcel(idx);
+        if (errorDetectedParcels.length > 0) {
+          errorDetectedParcels = errorDetectedParcels.filter(item => item.parcel.code !== code && item.parcel.name !== code);
+          updateErrorPreviewTable();
+          renderErrorParcelsOnMap();
+        }
+      }
     }
 
     function exportSubParcelsToExcel(ext = 'xlsx') {
@@ -5001,59 +5167,98 @@
     // =========================================================================
 
     function updateCascadingFilterOptions(activeField = null) {
-      const fCbdb = (document.getElementById('filter-cbdb')?.value || '').toLowerCase().trim();
-      const fDiemmia = (document.getElementById('filter-diemmia')?.value || '').toLowerCase().trim();
+      const elCbdb = document.getElementById('filter-cbdb');
+      const elDiemmia = document.getElementById('filter-diemmia');
       const fSearch = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
 
-      const availableCbdbs = new Set();
-      const availableDiemmias = new Set();
+      const curCbdb = elCbdb ? elCbdb.value.trim() : '';
+      const curDiemmia = elDiemmia ? elDiemmia.value.trim() : '';
+
+      const fCbdbLower = curCbdb.toLowerCase();
+      const fDiemmiaLower = curDiemmia.toLowerCase();
+
+      // Tập hợp tất cả các giá trị duy nhất trong toàn bộ dữ liệu
+      const allCbdbs = new Set();
+      const allDiemmias = new Set();
+
+      // Tập hợp các giá trị thu hẹp trực tiếp theo mối liên kết ràng buộc
+      const matchedCbdbs = new Set();
+      const matchedDiemmias = new Set();
 
       subParcels.forEach(p => {
-        const pCbdb = (p.canBoDiaBan || '').toLowerCase().trim();
-        const pDiemmia = (p.diemCanhTac || '').toLowerCase().trim();
+        const pCbdb = (p.canBoDiaBan || '').trim();
+        const pDiemmia = (p.diemCanhTac || '').trim();
         const pCode = (p.code || '').toLowerCase().trim();
         const pExtId = (p.externalId || '').toLowerCase().trim();
 
-        const matchSearch = !fSearch || pCode.includes(fSearch) || pExtId.includes(fSearch);
-        const matchCbdb = !fCbdb || pCbdb.includes(fCbdb);
-        const matchDiemmia = !fDiemmia || pDiemmia.includes(fDiemmia);
+        if (pCbdb) allCbdbs.add(pCbdb);
+        if (pDiemmia) allDiemmias.add(pDiemmia);
 
-        // Danh sách CBĐB thu hẹp theo: Điểm Mía hiện tại & Từ khóa tìm kiếm
-        if (matchDiemmia && matchSearch && p.canBoDiaBan && p.canBoDiaBan.trim()) {
-          availableCbdbs.add(p.canBoDiaBan.trim());
+        const matchSearch = !fSearch || pCode.includes(fSearch) || pExtId.includes(fSearch);
+        const matchCbdb = !fCbdbLower || pCbdb.toLowerCase() === fCbdbLower;
+        const matchDiemmia = !fDiemmiaLower || pDiemmia.toLowerCase() === fDiemmiaLower;
+
+        // Nếu khớp Điểm Mía hiện tại (và từ khóa tìm kiếm) -> đưa CBĐB này vào danh sách thu hẹp
+        if (matchDiemmia && matchSearch && pCbdb) {
+          matchedCbdbs.add(pCbdb);
         }
 
-        // Danh sách Điểm Mía thu hẹp theo: CBĐB hiện tại & Từ khóa tìm kiếm
-        if (matchCbdb && matchSearch && p.diemCanhTac && p.diemCanhTac.trim()) {
-          availableDiemmias.add(p.diemCanhTac.trim());
+        // Nếu khớp CBĐB hiện tại (và từ khóa tìm kiếm) -> đưa Điểm Mía này vào danh sách thu hẹp
+        if (matchCbdb && matchSearch && pDiemmia) {
+          matchedDiemmias.add(pDiemmia);
         }
       });
 
-      // Cập nhật Datalist CBĐB
-      const dlCbdb = document.getElementById('dl-cbdb');
-      if (dlCbdb) {
-        dlCbdb.innerHTML = Array.from(availableCbdbs)
-          .sort((a, b) => a.localeCompare(b, 'vi'))
-          .map(val => `<option value="${val}">`)
-          .join('');
+      // 1. Cập nhật thẻ Select CBĐB:
+      // - Nếu đang chọn Điểm Mía: chỉ liệt kê các CBĐB thuộc điểm mía đó.
+      // - Nếu chưa chọn Điểm Mía: hiển thị toàn bộ CBĐB.
+      if (elCbdb) {
+        const targetCbdbs = curDiemmia ? matchedCbdbs : allCbdbs;
+        const sortedCbdbs = Array.from(targetCbdbs).sort((a, b) => a.localeCompare(b, 'vi'));
+        let cbdbOptionsHtml = `<option value="">-- Tất cả CBĐB (${sortedCbdbs.length}) --</option>`;
+        sortedCbdbs.forEach(val => {
+          const isSelected = (val === curCbdb);
+          cbdbOptionsHtml += `<option value="${val}" ${isSelected ? 'selected' : ''}>${val}</option>`;
+        });
+        elCbdb.innerHTML = cbdbOptionsHtml;
+
+        // Nếu CBĐB đang chọn không còn nằm trong danh sách thu hẹp của Điểm Mía mới, tự động reset về rỗng
+        if (curCbdb && !targetCbdbs.has(curCbdb)) {
+          elCbdb.value = '';
+        }
       }
 
-      // Cập nhật Datalist Điểm Mía
-      const dlDiemMia = document.getElementById('dl-diemmia');
-      if (dlDiemMia) {
-        dlDiemMia.innerHTML = Array.from(availableDiemmias)
-          .sort((a, b) => a.localeCompare(b, 'vi'))
-          .map(val => `<option value="${val}">`)
-          .join('');
+      // 2. Cập nhật thẻ Select Điểm Mía:
+      // - RÀNG BUỘC THEO YÊU CẦU: Nếu đã chọn CBĐB A -> RÚT GỌN danh sách chỉ còn các Điểm Mía của CBĐB A.
+      // - Nếu chưa chọn CBĐB: hiển thị tất cả các Điểm Mía.
+      if (elDiemmia) {
+        const targetDiemmias = curCbdb ? matchedDiemmias : allDiemmias;
+        const sortedDiemmias = Array.from(targetDiemmias).sort((a, b) => a.localeCompare(b, 'vi'));
+        let diemmiaOptionsHtml = `<option value="">-- Tất cả Điểm Mía (${sortedDiemmias.length}) --</option>`;
+        sortedDiemmias.forEach(val => {
+          const isSelected = (val === curDiemmia);
+          diemmiaOptionsHtml += `<option value="${val}" ${isSelected ? 'selected' : ''}>${val}</option>`;
+        });
+        elDiemmia.innerHTML = diemmiaOptionsHtml;
+
+        // Nếu Điểm Mía đang chọn không còn thuộc CBĐB mới chọn, tự động reset về rỗng
+        if (curDiemmia && !targetDiemmias.has(curDiemmia)) {
+          elDiemmia.value = '';
+        }
       }
     }
 
     function populateFilters() {
       updateCascadingFilterOptions();
+      updateErrorCascadingFilterOptions();
     }
 
     function applyFilters(changedField = null) {
       excelPreviewCurrentPage = 1;
+
+      // Khi người dùng trực tiếp thay đổi 1 trường, cập nhật ràng buộc danh sách trước
+      updateCascadingFilterOptions(changedField);
+
       const fCbdb = (document.getElementById('filter-cbdb')?.value || '').toLowerCase().trim();
       const fDiemmia = (document.getElementById('filter-diemmia')?.value || '').toLowerCase().trim();
       const fSearch = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
@@ -5064,15 +5269,12 @@
         const pCode = (p.code || '').toLowerCase().trim();
         const pExtId = (p.externalId || '').toLowerCase().trim();
 
-        const matchCbdb = !fCbdb || pCbdb.includes(fCbdb);
-        const matchDiemmia = !fDiemmia || pDiemmia.includes(fDiemmia);
+        const matchCbdb = !fCbdb || pCbdb === fCbdb;
+        const matchDiemmia = !fDiemmia || pDiemmia === fDiemmia;
         const matchSearch = !fSearch || pCode.includes(fSearch) || pExtId.includes(fSearch);
 
         p.visible = matchCbdb && matchDiemmia && matchSearch;
       });
-
-      // Tự động rút gọn các trường gợi ý còn lại theo điều kiện vừa lọc
-      updateCascadingFilterOptions(changedField);
 
       // Cập nhật đa giác trên bản đồ, tính lại tâm trung tâm mới và cập nhật tức thì Bảng xem trước
       renderMultiAll(false);
@@ -5104,6 +5306,627 @@
       setTimeout(() => {
         fitAllMultiParcels();
       }, 100);
+    }
+
+    // =========================================================================
+    // PHẦN 2.5: QUẢN LÝ THỬA SAI - LỖI (BLOCK 4)
+    // =========================================================================
+
+    function updateErrorCascadingFilterOptions(activeField = null) {
+      const elCbdb = document.getElementById('errFilterCbdb');
+      const elDiemmia = document.getElementById('errFilterDiemmia');
+      if (!elCbdb || !elDiemmia) return;
+
+      const curCbdb = elCbdb.value.trim();
+      const curDiemmia = elDiemmia.value.trim();
+      const fCbdbLower = curCbdb.toLowerCase();
+      const fDiemmiaLower = curDiemmia.toLowerCase();
+
+      const allCbdbs = new Set();
+      const allDiemmias = new Set();
+      const matchedCbdbs = new Set();
+      const matchedDiemmias = new Set();
+
+      subParcels.forEach(p => {
+        const pCbdb = (p.canBoDiaBan || '').trim();
+        const pDiemmia = (p.diemCanhTac || '').trim();
+
+        if (pCbdb) allCbdbs.add(pCbdb);
+        if (pDiemmia) allDiemmias.add(pDiemmia);
+
+        const matchCbdb = !curCbdb || pCbdb.toLowerCase() === fCbdbLower;
+        const matchDiemmia = !curDiemmia || pDiemmia.toLowerCase() === fDiemmiaLower;
+
+        if (matchCbdb && pDiemmia) matchedDiemmias.add(pDiemmia);
+        if (matchDiemmia && pCbdb) matchedCbdbs.add(pCbdb);
+      });
+
+      // Cập nhật danh sách CBĐB nếu người dùng không thao tác trực tiếp trên ô CBĐB
+      if (activeField !== 'cbdb') {
+        const targetCbdbs = curDiemmia ? matchedCbdbs : allCbdbs;
+        const sortedCbdbs = Array.from(targetCbdbs).sort((a, b) => a.localeCompare(b, 'vi'));
+        let cbdbOptionsHtml = '<option value="">-- Tất cả CBĐB --</option>';
+        sortedCbdbs.forEach(val => {
+          const isSelected = (val === curCbdb);
+          cbdbOptionsHtml += `<option value="${val}" ${isSelected ? 'selected' : ''}>${val}</option>`;
+        });
+        elCbdb.innerHTML = cbdbOptionsHtml;
+
+        if (curCbdb && !targetCbdbs.has(curCbdb)) {
+          elCbdb.value = '';
+        }
+      }
+
+      // Cập nhật danh sách Điểm Mía nếu người dùng không thao tác trực tiếp trên ô Điểm Mía
+      if (activeField !== 'diemmia') {
+        const targetDiemmias = curCbdb ? matchedDiemmias : allDiemmias;
+        const sortedDiemmias = Array.from(targetDiemmias).sort((a, b) => a.localeCompare(b, 'vi'));
+        let diemmiaOptionsHtml = '<option value="">-- Tất cả Điểm mía --</option>';
+        sortedDiemmias.forEach(val => {
+          const isSelected = (val === curDiemmia);
+          diemmiaOptionsHtml += `<option value="${val}" ${isSelected ? 'selected' : ''}>${val}</option>`;
+        });
+        elDiemmia.innerHTML = diemmiaOptionsHtml;
+
+        if (curDiemmia && !targetDiemmias.has(curDiemmia)) {
+          elDiemmia.value = '';
+        }
+      }
+    }
+
+    function applyErrorCascadingFilter(changedField) {
+      updateErrorCascadingFilterOptions(changedField);
+      // Tự động quét lại danh sách lỗi tương ứng với tiêu chí mới
+      if (errorFilterActiveMode === 'geometry') {
+        runFilterGeometryErrors();
+      } else if (errorFilterActiveMode === 'outlier') {
+        runFilterOutlierParcels();
+      }
+    }
+
+    function resetErrorFilters() {
+      const elCbdb = document.getElementById('errFilterCbdb');
+      const elDiemmia = document.getElementById('errFilterDiemmia');
+      const elSearch = document.getElementById('errFilterSearch');
+      const elDist = document.getElementById('errFilterMaxDistKm');
+      if (elCbdb) elCbdb.value = '';
+      if (elDiemmia) elDiemmia.value = '';
+      if (elSearch) elSearch.value = '';
+      if (elDist) elDist.value = '5';
+      updateErrorCascadingFilterOptions();
+      clearErrorFilterMode();
+    }
+
+    // Thuật toán phát hiện lỗi hình học (chéo cạnh hoặc đè tọa độ điểm)
+    function detectParcelGeometryErrors(parcel) {
+      if (!parcel || !Array.isArray(parcel.coordinates)) {
+        return { isError: true, reason: 'Tọa độ rỗng', details: 'Dữ liệu tọa độ không tồn tại' };
+      }
+      const rawCoords = parcel.coordinates;
+      if (rawCoords.length < 4) {
+        return { isError: true, reason: 'Không đủ đỉnh đa giác', details: `Chỉ có ${rawCoords.length} điểm (yêu cầu tối thiểu 4 điểm)` };
+      }
+
+      // 1. Kiểm tra điểm trùng đè liên tiếp
+      for (let i = 0; i < rawCoords.length - 1; i++) {
+        const p1 = rawCoords[i];
+        const p2 = rawCoords[i + 1];
+        if (Math.abs(p1[0] - p2[0]) < 1e-7 && Math.abs(p1[1] - p2[1]) < 1e-7) {
+          return {
+            isError: true,
+            reason: 'Tọa độ điểm đè lên nhau',
+            details: `Trùng đè điểm liên tiếp (đỉnh #${i + 1} và #${i + 2})`
+          };
+        }
+      }
+
+      // 2. Kiểm tra trùng đè điểm không liên tiếp (loại trừ điểm đóng vòng đầu - cuối)
+      const nonClosing = rawCoords.slice(0, rawCoords.length - 1);
+      for (let i = 0; i < nonClosing.length; i++) {
+        for (let j = i + 1; j < nonClosing.length; j++) {
+          if (Math.abs(nonClosing[i][0] - nonClosing[j][0]) < 1e-7 && Math.abs(nonClosing[i][1] - nonClosing[j][1]) < 1e-7) {
+            return {
+              isError: true,
+              reason: 'Tọa độ điểm đè lên nhau',
+              details: `Trùng lặp tọa độ giữa đỉnh #${i + 1} và #${j + 1}`
+            };
+          }
+        }
+      }
+
+      // 3. Kiểm tra chéo cạnh (self-intersecting / kinks) qua Turf.js
+      try {
+        let ring = rawCoords.slice();
+        const first = ring[0];
+        const last = ring[ring.length - 1];
+        if (Math.abs(first[0] - last[0]) > 1e-9 || Math.abs(first[1] - last[1]) > 1e-9) {
+          ring.push([first[0], first[1]]);
+        }
+        const poly = turf.polygon([ring]);
+        const kinks = turf.kinks(poly);
+        if (kinks && kinks.features && kinks.features.length > 0) {
+          return {
+            isError: true,
+            reason: 'Thửa bị chéo cạnh',
+            details: `${kinks.features.length} vị trí cạnh tự cắt nhau (cánh bướm)`
+          };
+        }
+        const area = turf.area(poly);
+        if (isNaN(area) || area <= 0.01) {
+          return {
+            isError: true,
+            reason: 'Diện tích đa giác = 0',
+            details: 'Đa giác suy biến thành đường thẳng hoặc điểm'
+          };
+        }
+      } catch (e) {
+        return {
+          isError: true,
+          reason: 'Lỗi cấu trúc đa giác',
+          details: e.message || 'Không thể tạo polygon hợp lệ'
+        };
+      }
+
+      return { isError: false };
+    }
+
+    // Tính tâm trung tâm cho từng Điểm Mía
+    function calculateDiemMiaCentroids(parcelsToScan) {
+      const groups = {};
+      parcelsToScan.forEach(p => {
+        const dm = (p.diemCanhTac || '').trim();
+        if (!dm) return;
+        if (!groups[dm]) {
+          groups[dm] = { sumLat: 0, sumLng: 0, count: 0 };
+        }
+        if (p.centroidLat !== undefined && p.centroidLng !== undefined && !isNaN(p.centroidLat) && !isNaN(p.centroidLng)) {
+          groups[dm].sumLat += p.centroidLat;
+          groups[dm].sumLng += p.centroidLng;
+          groups[dm].count += 1;
+        }
+      });
+
+      const centroids = {};
+      for (const dm in groups) {
+        const g = groups[dm];
+        if (g.count > 0) {
+          centroids[dm] = {
+            lat: g.sumLat / g.count,
+            lng: g.sumLng / g.count,
+            count: g.count
+          };
+        }
+      }
+      return centroids;
+    }
+
+    // Lọc tất cả thửa bị chéo cạnh hoặc đè tọa độ
+    function runFilterGeometryErrors() {
+      if (subParcels.length === 0) {
+        showToast("Không có dữ liệu", "Chưa có thửa nào để kiểm tra lỗi!", "warning");
+        return;
+      }
+
+      const curCbdb = (document.getElementById('errFilterCbdb')?.value || '').toLowerCase().trim();
+      const curDiemmia = (document.getElementById('errFilterDiemmia')?.value || '').toLowerCase().trim();
+
+      const candidates = subParcels.filter(p => {
+        const pCbdb = (p.canBoDiaBan || '').toLowerCase().trim();
+        const pDm = (p.diemCanhTac || '').toLowerCase().trim();
+        const matchCbdb = !curCbdb || pCbdb === curCbdb;
+        const matchDm = !curDiemmia || pDm === curDiemmia;
+        return matchCbdb && matchDm;
+      });
+
+      const errors = [];
+      candidates.forEach(p => {
+        const res = detectParcelGeometryErrors(p);
+        if (res.isError) {
+          errors.push({
+            parcel: p,
+            type: 'geometry',
+            reason: res.reason,
+            details: res.details,
+            distKm: null
+          });
+        }
+      });
+
+      errorDetectedParcels = errors;
+      errorFilterActiveMode = 'geometry';
+      errorPreviewCurrentPage = 1;
+
+      const statusBar = document.getElementById('errorFilterStatusBar');
+      const statusText = document.getElementById('errorFilterStatusText');
+      if (statusBar && statusText) {
+        statusBar.classList.remove('hidden');
+        statusText.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1"></i>Đang lọc thửa sai hình học: Tìm thấy <strong>${errors.length}</strong> thửa lỗi`;
+      }
+
+      const badge = document.getElementById('badgeErrorTotalCount');
+      if (badge) {
+        badge.innerText = `${errors.length} lỗi`;
+        badge.className = errors.length > 0 
+          ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-600 text-white animate-pulse'
+          : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white';
+      }
+
+      updateErrorPreviewTable();
+      renderErrorParcelsOnMap();
+
+      if (errors.length > 0) {
+        showToast("Phát hiện thửa sai hình học", `Tìm thấy ${errors.length} thửa có cạnh cắt chéo hoặc trùng đè tọa độ!`, "error");
+      } else {
+        showToast("Không có thửa sai", "Tất cả các thửa theo tiêu chí đã chọn đều có hình học đa giác chuẩn xác!", "success");
+      }
+    }
+
+    // Lọc thửa xa trung tâm Điểm Mía theo đường chim bay
+    function runFilterOutlierParcels() {
+      if (subParcels.length === 0) {
+        showToast("Không có dữ liệu", "Chưa có thửa nào để kiểm tra khoảng cách!", "warning");
+        return;
+      }
+
+      const inputEl = document.getElementById('errFilterMaxDistKm');
+      let maxKm = parseInt(inputEl ? inputEl.value : '5', 10);
+      if (isNaN(maxKm) || maxKm <= 0) {
+        maxKm = 5;
+        if (inputEl) inputEl.value = '5';
+      }
+
+      const curCbdb = (document.getElementById('errFilterCbdb')?.value || '').toLowerCase().trim();
+      const curDiemmia = (document.getElementById('errFilterDiemmia')?.value || '').toLowerCase().trim();
+
+      // Đảm bảo tất cả các thửa đã được cache tâm
+      subParcels.forEach(p => {
+        if (p.centroidLat === undefined || p.centroidLng === undefined) {
+          cacheParcelGeometry(p);
+        }
+      });
+
+      // Tính tâm trung tâm cho từng Điểm Mía
+      const dmCentroids = calculateDiemMiaCentroids(subParcels);
+
+      const candidates = subParcels.filter(p => {
+        const pCbdb = (p.canBoDiaBan || '').toLowerCase().trim();
+        const pDm = (p.diemCanhTac || '').toLowerCase().trim();
+        const matchCbdb = !curCbdb || pCbdb === curCbdb;
+        const matchDm = !curDiemmia || pDm === curDiemmia;
+        return matchCbdb && matchDm;
+      });
+
+      const outliers = [];
+      candidates.forEach(p => {
+        const dm = (p.diemCanhTac || '').trim();
+        if (!dm) return;
+        const dmCenter = dmCentroids[dm];
+        if (!dmCenter || dmCenter.count <= 1) return;
+
+        if (p.centroidLat !== undefined && p.centroidLng !== undefined) {
+          const fromPt = turf.point([p.centroidLng, p.centroidLat]);
+          const toPt = turf.point([dmCenter.lng, dmCenter.lat]);
+          const distKm = turf.distance(fromPt, toPt, { units: 'kilometers' });
+
+          if (distKm > maxKm) {
+            outliers.push({
+              parcel: p,
+              type: 'outlier',
+              reason: `Cách tâm Đ.Mía ${distKm.toFixed(1)} km`,
+              details: `Vượt ngưỡng > ${maxKm} km (tâm "${dm}" gồm ${dmCenter.count} thửa: [${dmCenter.lat.toFixed(5)}, ${dmCenter.lng.toFixed(5)}])`,
+              distKm: distKm
+            });
+          }
+        }
+      });
+
+      // Sắp xếp các thửa cách xa nhất lên đầu danh sách
+      outliers.sort((a, b) => (b.distKm || 0) - (a.distKm || 0));
+
+      errorDetectedParcels = outliers;
+      errorFilterActiveMode = 'outlier';
+      errorPreviewCurrentPage = 1;
+
+      const statusBar = document.getElementById('errorFilterStatusBar');
+      const statusText = document.getElementById('errorFilterStatusText');
+      if (statusBar && statusText) {
+        statusBar.classList.remove('hidden');
+        statusText.innerHTML = `<i class="fa-solid fa-arrows-split-up-and-left text-amber-500 mr-1"></i>Đang lọc thửa xa tâm Đ.Mía (> ${maxKm} km): Tìm thấy <strong>${outliers.length}</strong> thửa`;
+      }
+
+      const badge = document.getElementById('badgeErrorTotalCount');
+      if (badge) {
+        badge.innerText = `${outliers.length} thửa xa`;
+        badge.className = outliers.length > 0
+          ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-600 text-white animate-pulse'
+          : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white';
+      }
+
+      updateErrorPreviewTable();
+      renderErrorParcelsOnMap();
+
+      if (outliers.length > 0) {
+        showToast("Phát hiện thửa xa tâm Điểm mía", `Có ${outliers.length} thửa cách tâm trung tâm của Điểm Mía lớn hơn ${maxKm} km!`, "warning");
+      } else {
+        showToast("Không có thửa xa", `Tất cả các thửa đều nằm trong bán kính ${maxKm} km tính từ tâm Điểm Mía!`, "success");
+      }
+    }
+
+    // Tắt chế độ lọc lỗi và xóa các hiệu ứng nhấp nháy trên bản đồ
+    function clearErrorFilterMode() {
+      errorFilterActiveMode = null;
+      errorDetectedParcels = [];
+      errorPreviewCurrentPage = 1;
+      if (errorParcelsLayer) errorParcelsLayer.clearLayers();
+
+      const statusBar = document.getElementById('errorFilterStatusBar');
+      if (statusBar) statusBar.classList.add('hidden');
+
+      const badge = document.getElementById('badgeErrorTotalCount');
+      if (badge) {
+        badge.innerText = '0 lỗi';
+        badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-500 text-white';
+      }
+
+      updateErrorPreviewTable();
+      fitAllMultiParcels();
+    }
+
+    // Hiển thị các thửa lỗi lên bản đồ kèm hiệu ứng nhấp nháy to nhỏ
+    function renderErrorParcelsOnMap() {
+      if (!errorParcelsLayer || !map) return;
+      errorParcelsLayer.clearLayers();
+
+      if (errorDetectedParcels.length === 0) return;
+
+      const bounds = L.latLngBounds();
+
+      errorDetectedParcels.forEach(item => {
+        const p = item.parcel;
+        if (!p.coordinates || p.coordinates.length < 3) return;
+
+        const latlngs = p.coordinates.map(pt => [pt[1], pt[0]]);
+        const poly = L.polygon(latlngs, {
+          className: 'error-polygon-pulsing',
+          color: '#ef4444',
+          weight: 3.5,
+          fillColor: '#f97316',
+          fillOpacity: 0.55
+        }).addTo(errorParcelsLayer);
+
+        bounds.extend(poly.getBounds());
+
+        // Thêm marker cảnh báo nhấp nháy tại tâm thửa
+        if (p.centroidLat !== undefined && p.centroidLng !== undefined) {
+          const pinIcon = L.divIcon({
+            className: 'flex items-center justify-center',
+            html: `
+              <div class="error-pin-anim flex flex-col items-center justify-center cursor-pointer" style="width:40px;height:40px;">
+                <div class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg border-2 border-white">
+                  <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                </div>
+                <span class="mt-0.5 px-1 py-0.2 bg-black/80 text-yellow-300 font-mono text-[8px] font-bold rounded shadow leading-none whitespace-nowrap">
+                  ${p.code || 'LỖI'}
+                </span>
+              </div>
+            `,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+          });
+
+          const pinMarker = L.marker([p.centroidLat, p.centroidLng], {
+            icon: pinIcon,
+            zIndexOffset: 3000
+          }).addTo(errorParcelsLayer);
+
+          const popupHtml = `
+            <div class="text-xs font-sans space-y-1.5 p-1 min-w-[200px]">
+              <div class="font-bold text-rose-600 flex items-center gap-1.5 border-b pb-1">
+                <i class="fa-solid fa-triangle-exclamation"></i> THỬA PHÁT HIỆN LỖI
+              </div>
+              <div class="font-mono text-[11px] text-slate-700 dark:text-slate-300 space-y-0.5">
+                <div><strong>Mã số:</strong> ${p.code || ''}</div>
+                <div><strong>Điểm mía:</strong> ${p.diemCanhTac || ''}</div>
+                <div><strong>CBĐB:</strong> ${p.canBoDiaBan || ''}</div>
+                <div class="text-rose-600 font-bold"><strong>Lỗi:</strong> ${item.reason}</div>
+                <div class="text-slate-500 text-[10px]">${item.details}</div>
+                <div><strong>Diện tích:</strong> ${(p.areaM2 || 0).toLocaleString('vi-VN', { maximumFractionDigits: 1 })} m²</div>
+              </div>
+              <div class="pt-1 flex gap-1">
+                <button onclick="editSubParcelByCode('${p.code}')" class="flex-1 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 shadow-sm transition">
+                  <i class="fa-solid fa-pen-to-square"></i> Nắn sửa
+                </button>
+                <button onclick="deleteSubParcelByCode('${p.code}')" class="py-1 px-2 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold rounded flex items-center justify-center gap-1 shadow-sm transition" title="Xóa thửa">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          poly.bindPopup(popupHtml, { maxWidth: 240, minWidth: 190 });
+          pinMarker.bindPopup(popupHtml, { maxWidth: 240, minWidth: 190 });
+        }
+      });
+
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 17 });
+      }
+    }
+
+    // Cập nhật bảng danh sách xem trước các thửa lỗi
+    function updateErrorPreviewTable() {
+      const tbody = document.getElementById('errorExportPreviewTbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const fSearch = (document.getElementById('errFilterSearch')?.value || '').toLowerCase().trim();
+      const filteredList = errorDetectedParcels.filter(item => {
+        if (!fSearch) return true;
+        const p = item.parcel;
+        return (p.code || '').toLowerCase().includes(fSearch) ||
+               (p.externalId || '').toLowerCase().includes(fSearch) ||
+               (p.diemCanhTac || '').toLowerCase().includes(fSearch) ||
+               (item.reason || '').toLowerCase().includes(fSearch);
+      });
+
+      const total = filteredList.length;
+      const totalPages = Math.max(1, Math.ceil(total / ERROR_PREVIEW_PAGE_SIZE));
+      if (errorPreviewCurrentPage > totalPages) errorPreviewCurrentPage = totalPages;
+      if (errorPreviewCurrentPage < 1) errorPreviewCurrentPage = 1;
+
+      const pInfo = document.getElementById('errorPaginationInfo');
+      if (pInfo) {
+        if (!errorFilterActiveMode) {
+          pInfo.innerText = 'Chưa thực hiện lọc lỗi';
+        } else if (total === 0) {
+          pInfo.innerText = 'Không phát hiện thửa lỗi nào!';
+        } else {
+          const start = (errorPreviewCurrentPage - 1) * ERROR_PREVIEW_PAGE_SIZE + 1;
+          const end = Math.min(errorPreviewCurrentPage * ERROR_PREVIEW_PAGE_SIZE, total);
+          pInfo.innerText = `Hiển thị ${start}-${end} / ${total} thửa lỗi (Tổng ${total})`;
+        }
+      }
+
+      const pPage = document.getElementById('errorCurrentPageText');
+      if (pPage) {
+        pPage.innerText = total > 0 ? `${errorPreviewCurrentPage} / ${totalPages}` : `0 / 0`;
+      }
+
+      if (total === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-4 text-center text-slate-400 italic">
+              ${!errorFilterActiveMode 
+                ? 'Bấm "Lọc thửa sai" hoặc "Lọc thửa xa tâm Điểm mía" để phát hiện các thửa lỗi.' 
+                : 'Tuyệt vời! Không phát hiện thửa nào bị lỗi theo tiêu chí đã chọn.'}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const pageItems = filteredList.slice(
+        (errorPreviewCurrentPage - 1) * ERROR_PREVIEW_PAGE_SIZE,
+        errorPreviewCurrentPage * ERROR_PREVIEW_PAGE_SIZE
+      );
+
+      const fragment = document.createDocumentFragment();
+      pageItems.forEach(item => {
+        const p = item.parcel;
+        let gmapsLink = '#';
+        if (!isNaN(originPoint.lat) && !isNaN(originPoint.lng) && p.centroidLat && p.centroidLng) {
+          gmapsLink = `https://www.google.com/maps/dir/?api=1&origin=${originPoint.lat},${originPoint.lng}&destination=${p.centroidLat},${p.centroidLng}&travelmode=driving`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "text-slate-700 dark:text-slate-200 hover:bg-rose-50/70 dark:hover:bg-rose-950/30 transition";
+        tr.innerHTML = `
+          <td class="py-1.5 px-2 truncate max-w-[100px] font-semibold text-rose-600 dark:text-rose-400 font-mono">
+            ${p.code || ''}
+          </td>
+          <td class="py-1.5 px-2 truncate max-w-[100px]">
+            ${p.diemCanhTac ? `<span class="inline-block w-2 h-2 rounded-full mr-1 align-middle" style="background:${getColorForDiemCanhTac(p.diemCanhTac)}"></span>` : ''}
+            <span>${p.diemCanhTac || ''}</span>
+          </td>
+          <td class="py-1.5 px-2 truncate max-w-[90px] text-slate-500">${p.canBoDiaBan || ''}</td>
+          <td class="py-1.5 px-2 max-w-[160px]">
+            <div class="font-bold text-rose-600 truncate" title="${item.details}">${item.reason}</div>
+            <div class="text-[9px] text-slate-400 truncate">${item.details}</div>
+          </td>
+          <td class="py-1.5 px-2 text-right font-extrabold text-slate-700 dark:text-slate-300">
+            ${(p.areaM2 || 0).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}
+          </td>
+          <td class="py-1.5 px-2 text-center whitespace-nowrap">
+            <button onclick="focusSubParcelByCode('${p.code}')" class="text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 p-1 rounded hover:bg-blue-50 dark:hover:bg-slate-700 transition" title="Phóng tới thửa này trên bản đồ">
+              <i class="fa-solid fa-crosshairs"></i>
+            </button>
+            <button onclick="editSubParcelByCode('${p.code}')" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-400 p-1 rounded hover:bg-emerald-50 dark:hover:bg-slate-700 transition" title="Nắn sửa đỉnh (Chế độ 2)">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <a href="${gmapsLink}" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 transition inline-block p-1 rounded hover:bg-indigo-100 dark:hover:bg-slate-700" title="Chỉ đường bằng Google Maps">
+              <i class="fa-solid fa-diamond-turn-right"></i>
+            </a>
+            <button onclick="deleteSubParcelByCode('${p.code}')" class="text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-slate-700 transition" title="Xóa thửa này">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        fragment.appendChild(tr);
+      });
+      tbody.appendChild(fragment);
+    }
+
+    function changeErrorPage(delta) {
+      errorPreviewCurrentPage += delta;
+      updateErrorPreviewTable();
+    }
+
+    function filterErrorTableRows() {
+      errorPreviewCurrentPage = 1;
+      updateErrorPreviewTable();
+    }
+
+    // Xuất Excel danh sách các thửa bị lỗi
+    function exportErrorParcelsToExcel() {
+      if (currentUser && currentUser.role === 'demo') {
+        showToast("Tài khoản Demo bị hạn chế", "Chế độ trải nghiệm không có quyền xuất file dữ liệu!", "error");
+        return;
+      }
+
+      if (errorDetectedParcels.length === 0) {
+        showToast("Không có thửa lỗi", "Danh sách thửa lỗi đang trống hoặc chưa thực hiện lọc!", "warning");
+        return;
+      }
+
+      const sheetData = [
+        ["External ID", "Mã số", "Điểm Mía", "Cán bộ địa bàn", "Loại Lỗi", "Chi Tiết Lỗi / Độ Lệch", "Độ lệch Km", "Diện tích (m2)", "Tâm (Lat, Lng)", "Geom"]
+      ];
+
+      errorDetectedParcels.forEach(item => {
+        const p = item.parcel;
+        const centerStr = (p.centroidLat && p.centroidLng) ? `${p.centroidLat.toFixed(6)}, ${p.centroidLng.toFixed(6)}` : '';
+        const geomStr = JSON.stringify(p.coordinates || []);
+        sheetData.push([
+          p.externalId || '',
+          p.code || '',
+          p.diemCanhTac || '',
+          p.canBoDiaBan || '',
+          item.reason || '',
+          item.details || '',
+          item.distKm !== null ? Number(Number(item.distKm).toFixed(1)) : '',
+          Number(Number(p.areaM2 || 0).toFixed(1)),
+          centerStr,
+          geomStr
+        ]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(sheetData);
+      for (let i = 1; i < sheetData.length; i++) {
+        const cellRefArea = XLSX.utils.encode_cell({ r: i, c: 7 });
+        if (ws[cellRefArea]) {
+          ws[cellRefArea].t = 'n';
+          ws[cellRefArea].z = '0.0';
+        }
+      }
+
+      ws['!cols'] = [
+        { wch: 32 },
+        { wch: 18 },
+        { wch: 22 },
+        { wch: 20 },
+        { wch: 25 },
+        { wch: 38 },
+        { wch: 14 },
+        { wch: 18 },
+        { wch: 25 },
+        { wch: 45 }
+      ];
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Thua_Loi");
+
+      const filename = `Danh_Sach_Thua_Loi_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      XLSX.writeFile(wb, filename);
+      showToast("Đã xuất File Excel Thửa Lỗi!", `Đã lưu "${filename}" gồm ${errorDetectedParcels.length} thửa lỗi.`);
     }
 
     // =========================================================================
