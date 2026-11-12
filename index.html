@@ -1297,11 +1297,16 @@
             Google Sheet Đang Kết Nối:
           </label>
           <div class="flex gap-1.5">
-            <input type="password" id="cfgSheetId" value="1kcRVXwpCC8KOsAsnEJoD0dZug9guonzqFTaPx8tfS5o" readonly
-              class="flex-1 px-3 py-2 rounded-lg border bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[11px]" title="ID Google Sheet đã được bảo vệ">
-            <button type="button" onclick="openProtectedGoogleSheet()"
-              class="px-3 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg flex items-center gap-1.5 transition shadow-xs" title="Yêu cầu mật khẩu để mở file Google Sheet">
-              <i class="fa-solid fa-lock text-amber-500"></i>
+            <div class="relative flex-1">
+              <input type="password" id="cfgSheetId" value="1kcRVXwpCC8KOsAsnEJoD0dZug9guonzqFTaPx8tfS5o" readonly
+                class="w-full px-3 py-2 pr-8 rounded-lg border bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[11px]" title="ID Google Sheet đã được bảo vệ">
+              <button type="button" onclick="togglePasswordVisibility('cfgSheetId', 'cfgSheetIdIcon')" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i id="cfgSheetIdIcon" class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+            <button type="button" id="btnOpenGoogleSheetDirect" onclick="openProtectedGoogleSheet()"
+              class="px-3 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg flex items-center gap-1.5 transition shadow-xs" title="Mở file Google Sheet">
+              <i id="openSheetLockIcon" class="fa-solid fa-lock text-amber-500"></i>
               <span>Mở Sheet</span>
             </button>
           </div>
@@ -1569,6 +1574,65 @@
           <span id="adminSaveBtnText">Xác nhận Lưu Data</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: XÁC THỰC MẬT KHẨU QUẢN TRỊ ĐỂ MỞ GOOGLE SHEET                     -->
+  <!-- ========================================================================= -->
+  <div id="adminSheetPasswordModal" class="hidden fixed inset-0 z-[10006] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 transition-all">
+    <div class="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-5 space-y-4 relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base shadow-xs">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">Xác thực Quản trị viên</h3>
+            <p class="text-[10.5px] text-slate-500 dark:text-slate-400">Mở trực tiếp file Google Sheet trên trình duyệt</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAdminSheetPasswordModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleAdminSheetPasswordSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            Nhập mật khẩu quản trị:
+          </label>
+          <div class="relative">
+            <input type="password" id="adminSheetAuthPass" placeholder="Nhập mật khẩu..." required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none focus:ring-2 focus:ring-amber-500 pr-10">
+            <button type="button" onclick="togglePasswordVisibility('adminSheetAuthPass', 'adminSheetAuthPassIcon')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+              <i id="adminSheetAuthPassIcon" class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="adminSheetAuthAlert" class="hidden p-2 rounded-xl text-[11px] font-semibold flex items-center gap-1.5"></div>
+
+        <div id="adminSheetDirectFallbackBox" class="hidden p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-700 text-center text-xs">
+          <a id="adminSheetDirectFallbackLink" href="#" target="_blank" rel="noopener noreferrer" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-up-right-from-square"></i>
+            <span>Bấm vào đây để mở Google Sheet</span>
+          </a>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" onclick="closeAdminSheetPasswordModal()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+            Hủy
+          </button>
+          <button type="submit" id="btnAdminSheetAuthSubmit" class="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold transition shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-unlock"></i>
+            <span>Mở Sheet</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -2742,7 +2806,9 @@
       const badgeTotalEl = document.getElementById('editorBadgeTotalCount');
       const editedCount = editorParcels.filter(p => p.isEdited).length;
       if (badgeTotalEl) {
-        if (editedCount > 0) {
+        if (editingSubParcelIndex !== null) {
+          badgeTotalEl.innerHTML = `1 thửa • <span class="text-amber-500 font-bold"><i class="fa-solid fa-pen-ruler mr-1"></i>Đang nắn từ Chức năng 1</span>`;
+        } else if (editedCount > 0) {
           badgeTotalEl.innerHTML = `${editorParcels.length} thửa • <span class="text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-check"></i> Đã sửa: ${editedCount}</span>`;
         } else {
           badgeTotalEl.innerText = `${editorParcels.length} thửa`;
@@ -2864,10 +2930,18 @@
             cacheParcelGeometry(subParcels[matchIdx]);
           }
         }
+        const wasFromMulti = (editingSubParcelIndex !== null);
         editingParcelInitialBackup = null;
         editingSubParcelIndex = null;
+        activeEditIndex = null;
         closeEditorView();
-        showToast("Đã hủy bỏ thao tác", "Đã hủy các thay đổi và khôi phục lại ranh giới ban đầu của thửa.");
+
+        if (wasFromMulti) {
+          switchMainModule('multi');
+          showToast("Đã hủy bỏ thao tác", "Đã khôi phục ranh giới ban đầu và quay về Chức năng 1.");
+        } else {
+          showToast("Đã hủy bỏ thao tác", "Đã hủy các thay đổi và khôi phục lại ranh giới ban đầu của thửa.");
+        }
       };
 
       if (isModified && !skipConfirm) {
@@ -2881,7 +2955,14 @@
       activeEditIndex = idx;
       const p = editorParcels[idx];
       editingParcelInitialBackup = JSON.parse(JSON.stringify(p));
-      document.getElementById('editorActiveParcelName').innerText = `Đang sửa: ${p.code || p.name}`;
+      const activeNameEl = document.getElementById('editorActiveParcelName');
+      if (activeNameEl) {
+        if (editingSubParcelIndex !== null) {
+          activeNameEl.innerHTML = `<span class="text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-pen-to-square mr-1"></i>Đang nắn: ${p.code || p.name}</span> <span class="text-[10px] text-slate-400 font-normal">(Chức năng 1)</span>`;
+        } else {
+          activeNameEl.innerText = `Đang sửa: ${p.code || p.name}`;
+        }
+      }
       polyStyle.color = p.color || '#10b981';
       document.getElementById('polyColorPicker').value = polyStyle.color;
 
@@ -2951,25 +3032,62 @@
             subParcels[matchIdx].isEdited = true;
             subParcels[matchIdx].editedAt = Date.now();
             cacheParcelGeometry(subParcels[matchIdx]);
+
+            // Tự động kiểm tra lại lỗi nếu đang ở chế độ lọc lỗi
+            if (errorFilterActiveMode === 'geometry') {
+              runFilterGeometryErrors();
+            } else if (errorFilterActiveMode === 'outlier') {
+              runFilterOutlierParcels();
+            }
           }
 
           renderEditorAll();
           renderEditorList();
           renderSubParcelsSidebarList();
           if (typeof renderMultiAll === 'function') {
-            renderMultiAll();
+            renderMultiAll(false);
           }
+          updateHeaderParcelBadge();
+          updateExcelPreviewTable();
 
           showToast("Đã lưu thay đổi", `Thửa ${editedParcel.code || editedParcel.name} đã được cập nhật tọa độ (Đã đánh dấu sửa).`);
+          return true;
         } catch (err) {
           console.error(err);
           showToast("Lỗi lưu thửa", "Hình dạng đa giác có thể không hợp lệ do đỉnh bị chéo nhau.", "error");
+          return false;
         }
       }
+      return false;
     }
 
     function saveAndCloseEditor() {
-      saveEditorParcel();
+      const saved = saveEditorParcel();
+      if (!saved) return;
+
+      // Nếu đang trong chế độ nắn sửa 1 thửa được chuyển qua từ Chức năng 1
+      if (editingSubParcelIndex !== null) {
+        const targetSubIdx = editingSubParcelIndex;
+        editingSubParcelIndex = null;
+        activeEditIndex = null;
+        editingParcelInitialBackup = null;
+        cancelMapInteractiveModes();
+
+        const editView = document.getElementById('editorEditView');
+        if (editView) {
+          editView.classList.add('hidden');
+          editView.classList.remove('flex');
+        }
+
+        // Tự động chuyển về Chức năng 1 và focus vào thửa vừa sửa
+        switchMainModule('multi');
+        if (typeof focusSubParcel === 'function' && subParcels[targetSubIdx]) {
+          focusSubParcel(targetSubIdx);
+        }
+        showToast("Đã hoàn tất nắn sửa", "Đã lưu tọa độ mới và tự động quay về Chức năng 1.", "success");
+        return;
+      }
+
       closeEditorView();
     }
 
@@ -3144,11 +3262,26 @@
           editorParcels[eIdx].editedAt = Date.now();
         }
 
+        // Tự động kiểm tra lại lỗi nếu đang ở chế độ lọc lỗi
+        if (errorFilterActiveMode === 'geometry') {
+          runFilterGeometryErrors();
+        } else if (errorFilterActiveMode === 'outlier') {
+          runFilterOutlierParcels();
+        }
+
+        const targetIdx = editingSubParcelIndex;
         editingSubParcelIndex = null;
+        activeEditIndex = null;
+        editingParcelInitialBackup = null;
         renderSubParcelsSidebarList();
         renderEditorList();
-        if (typeof renderMultiAll === 'function') renderMultiAll();
+        if (typeof renderMultiAll === 'function') renderMultiAll(false);
+        updateHeaderParcelBadge();
+        updateExcelPreviewTable();
         switchMainModule('multi');
+        if (typeof focusSubParcel === 'function' && subParcels[targetIdx]) {
+          focusSubParcel(targetIdx);
+        }
         showToast("Đã cập nhật thửa " + target.code, "Tọa độ mới đã được cập nhật vào danh sách (Đã đánh dấu sửa).");
         return;
       }
@@ -3723,10 +3856,11 @@
       const p = subParcels[idx];
       if (!p) return;
       editingSubParcelIndex = idx;
-      editorParcels = JSON.parse(JSON.stringify(subParcels));
+      // CHỈ NẠP DUY NHẤT 1 THỬA ĐƯỢC CHỌN VÀO TRẠM SỬA
+      editorParcels = [JSON.parse(JSON.stringify(p))];
       switchMainModule('editor');
-      openEditorForParcel(idx);
-      showToast("Đang chỉnh sửa thửa " + (p.code || p.name), "Sau khi sửa đỉnh xong, nhấn 'Lưu thửa' để cập nhật.");
+      openEditorForParcel(0);
+      showToast("Đang nắn sửa thửa " + (p.code || p.name), "Chỉ tải duy nhất thửa này vào trạm sửa. Sau khi nắn đỉnh xong, nhấn 'Lưu & Đóng' để cập nhật về Chức năng 1.");
     }
 
     function deleteSubParcel(idx) {
@@ -6296,16 +6430,110 @@ function jsonResponse(obj) {
       }
     }
 
-    // Mở trực tiếp Google Sheet với mật khẩu bảo vệ
+    // Mở trực tiếp Google Sheet với cơ chế xác thực an toàn (Không dùng window.prompt vì bị trình duyệt chặn popup)
     function openProtectedGoogleSheet() {
-      const enteredPass = prompt("Nhập mật khẩu quản trị để mở Google Sheet:");
-      if (enteredPass === null) return; // Bấm Cancel
-      if (enteredPass.trim() === 'thanhpv') {
-        const sheetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/edit?usp=sharing`;
-        window.open(sheetUrl, '_blank', 'noopener,noreferrer');
-        showToast("Xác thực thành công", "Đang mở Google Sheet trong tab mới...");
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/edit?usp=sharing`;
+
+      // 1. Nếu người dùng hiện tại đã đăng nhập vai trò Admin -> Mở trực tiếp luôn
+      if (currentUser && currentUser.role === 'admin') {
+        const win = window.open(sheetUrl, '_blank', 'noopener,noreferrer');
+        if (!win || win.closed || typeof win.closed === 'undefined') {
+          openAdminSheetPasswordModal(true, sheetUrl);
+        } else {
+          showToast("Xác thực Quản trị viên", "Đang mở Google Sheet trong tab mới...", "success");
+        }
+        return;
+      }
+
+      // 2. Nếu chưa đăng nhập Admin -> Mở modal xác thực nội bộ (không bị trình duyệt chặn)
+      openAdminSheetPasswordModal(false, sheetUrl);
+    }
+
+    function openAdminSheetPasswordModal(alreadyAdmin = false, sheetUrl = null) {
+      const modal = document.getElementById('adminSheetPasswordModal');
+      const passInp = document.getElementById('adminSheetAuthPass');
+      const alertBox = document.getElementById('adminSheetAuthAlert');
+      const directBox = document.getElementById('adminSheetDirectFallbackBox');
+      const directLink = document.getElementById('adminSheetDirectFallbackLink');
+
+      if (alertBox) {
+        alertBox.className = 'hidden';
+        alertBox.innerHTML = '';
+      }
+
+      if (alreadyAdmin && sheetUrl) {
+        if (directBox && directLink) {
+          directLink.href = sheetUrl;
+          directBox.classList.remove('hidden');
+        }
       } else {
-        showToast("Sai mật khẩu!", "Mật khẩu không chính xác. Bạn không có quyền mở trực tiếp file này.", "error");
+        if (directBox) directBox.classList.add('hidden');
+      }
+
+      if (passInp) {
+        passInp.value = '';
+        setTimeout(() => passInp.focus(), 150);
+      }
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAdminSheetPasswordModal() {
+      const modal = document.getElementById('adminSheetPasswordModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function handleAdminSheetPasswordSubmit(event) {
+      if (event) event.preventDefault();
+      const passInp = document.getElementById('adminSheetAuthPass');
+      const enteredPass = (passInp?.value || '').trim();
+      const cleanLower = enteredPass.toLowerCase();
+
+      // Kiểm tra mật khẩu quản trị:
+      // Chấp nhận 'thanhpv' (không phân biệt chữ hoa/thường), mật khẩu '456', hoặc mật khẩu admin hiện hành
+      const isValid = (cleanLower === 'thanhpv') || 
+                      (enteredPass === '456') || 
+                      (currentUser && currentUser.pass && currentUser.pass === enteredPass);
+
+      const alertBox = document.getElementById('adminSheetAuthAlert');
+      const directBox = document.getElementById('adminSheetDirectFallbackBox');
+      const directLink = document.getElementById('adminSheetDirectFallbackLink');
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/edit?usp=sharing`;
+
+      if (isValid) {
+        if (alertBox) {
+          alertBox.className = 'p-2 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300';
+          alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i> Mật khẩu chính xác! Đang mở Google Sheet...';
+          alertBox.classList.remove('hidden');
+        }
+
+        const win = window.open(sheetUrl, '_blank', 'noopener,noreferrer');
+        
+        if (!win || win.closed || typeof win.closed === 'undefined') {
+          if (directBox && directLink) {
+            directLink.href = sheetUrl;
+            directBox.classList.remove('hidden');
+          }
+          showToast("Trình duyệt chặn tab mới", "Vui lòng bấm trực tiếp vào liên kết bên dưới để mở Sheet!", "warning");
+        } else {
+          showToast("Xác thực thành công", "Đang mở Google Sheet trong tab mới...", "success");
+          setTimeout(() => {
+            closeAdminSheetPasswordModal();
+          }, 800);
+        }
+      } else {
+        if (alertBox) {
+          alertBox.className = 'p-2 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-700 text-rose-700 dark:text-rose-300';
+          alertBox.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-500"></i> Mật khẩu không chính xác! Vui lòng thử lại.';
+          alertBox.classList.remove('hidden');
+        }
+        if (passInp) passInp.select();
       }
     }
 
@@ -6464,6 +6692,15 @@ function jsonResponse(obj) {
         loadDemoDataFromSheet();
       } else {
         showToast(`Xin chào, ${user.name || user.email}!`, `Đăng nhập thành công • Kết nối với sheet riêng: [${user.dataSheet || 'data'}].`);
+      }
+      const openSheetLock = document.getElementById('openSheetLockIcon');
+      const btnOpenSheet = document.getElementById('btnOpenGoogleSheetDirect');
+      if (user.role === 'admin') {
+        if (openSheetLock) openSheetLock.className = 'fa-solid fa-arrow-up-right-from-square text-emerald-500';
+        if (btnOpenSheet) btnOpenSheet.title = 'Mở file Google Sheet (Đã xác thực Quản trị)';
+      } else {
+        if (openSheetLock) openSheetLock.className = 'fa-solid fa-lock text-amber-500';
+        if (btnOpenSheet) btnOpenSheet.title = 'Yêu cầu mật khẩu để mở file Google Sheet';
       }
       updateAdminSaveButtonUI();
     }
@@ -6969,6 +7206,10 @@ function jsonResponse(obj) {
 
       syncWorkspacePaddingWithHeader();
       updateAdminSaveButtonUI();
+      const openSheetLock = document.getElementById('openSheetLockIcon');
+      const btnOpenSheet = document.getElementById('btnOpenGoogleSheetDirect');
+      if (openSheetLock) openSheetLock.className = 'fa-solid fa-lock text-amber-500';
+      if (btnOpenSheet) btnOpenSheet.title = 'Yêu cầu mật khẩu để mở file Google Sheet';
 
       const passInp = document.getElementById('loginPass');
       if (passInp) passInp.value = '';
