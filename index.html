@@ -257,43 +257,46 @@
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Pulsing animation for defective & outlier parcels (Block 4) */
+    /* Pulsing animation for defective & outlier parcels (chậm hơn, hình nhỏ gọn, độ trong suốt 50%) */
     @keyframes errorPolygonPulse {
       0% {
-        stroke-width: 2.5px;
+        stroke-width: 2px;
         stroke: #ef4444;
         fill: #ef4444;
         fill-opacity: 0.35;
-        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.6));
+        opacity: 0.70;
+        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.4));
       }
       50% {
-        stroke-width: 6.5px;
+        stroke-width: 3.5px;
         stroke: #f97316;
         fill: #f97316;
-        fill-opacity: 0.75;
-        filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.95));
+        fill-opacity: 0.50;
+        opacity: 0.95;
+        filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.7));
       }
       100% {
-        stroke-width: 2.5px;
+        stroke-width: 2px;
         stroke: #ef4444;
         fill: #ef4444;
         fill-opacity: 0.35;
-        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.6));
+        opacity: 0.70;
+        filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.4));
       }
     }
     .error-polygon-pulsing,
     path.error-polygon-pulsing {
-      animation: errorPolygonPulse 1.25s infinite ease-in-out !important;
+      animation: errorPolygonPulse 2.4s infinite ease-in-out !important;
       stroke-linejoin: round;
       stroke-linecap: round;
     }
     @keyframes errorPinPulse {
-      0% { transform: scale(0.85); opacity: 0.85; }
-      50% { transform: scale(1.35); opacity: 1; filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.95)); }
-      100% { transform: scale(0.85); opacity: 0.85; }
+      0% { transform: scale(0.9); opacity: 0.75; }
+      50% { transform: scale(1.15); opacity: 0.95; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.7)); }
+      100% { transform: scale(0.9); opacity: 0.75; }
     }
     .error-pin-anim {
-      animation: errorPinPulse 1.25s infinite ease-in-out;
+      animation: errorPinPulse 2.4s infinite ease-in-out;
       transform-origin: center center;
     }
   </style>
@@ -443,23 +446,8 @@
             <span class="text-[11px] font-bold uppercase tracking-wider text-rose-100 flex items-center gap-1.5">
               <i class="fa-solid fa-star text-yellow-300"></i> Tâm Trung Tâm Tập Hợp Các Thửa
             </span>
-            <div class="flex items-center gap-1.5">
-              <span id="multiBadgeCount" class="text-[11px] bg-black/25 px-2.5 py-0.5 rounded-full font-bold font-mono">3/3 thửa</span>
-              <button onclick="toggleLeftSidebar()" class="w-6 h-6 rounded-lg bg-black/25 hover:bg-black/40 text-white flex items-center justify-center text-xs transition" title="Thu gọn bảng sang bên trái">
-                <i class="fa-solid fa-angles-left"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Quick Action Bar: Đồng bộ & Lưu Sheet nổi bật -->
-          <div class="grid grid-cols-2 gap-2 mb-2">
-            <button onclick="syncDataFromGoogleSheet()" class="py-2 px-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow-md flex items-center justify-center gap-1.5 transition border border-emerald-400/40">
-              <i class="fa-solid fa-cloud-arrow-down text-emerald-300 text-sm"></i>
-              <span>Đồng bộ Sheet</span>
-            </button>
-            <button onclick="saveDataToGoogleSheet()" class="py-2 px-2.5 rounded-xl bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold shadow-md flex items-center justify-center gap-1.5 transition border border-teal-400/40">
-              <i class="fa-solid fa-cloud-arrow-up text-teal-300 text-sm"></i>
-              <span>Lưu lên Sheet</span>
+            <button onclick="toggleLeftSidebar()" class="w-6 h-6 rounded-lg bg-black/25 hover:bg-black/40 text-white flex items-center justify-center text-xs transition" title="Thu gọn bảng sang bên trái">
+              <i class="fa-solid fa-angles-left"></i>
             </button>
           </div>
 
@@ -484,18 +472,13 @@
             </div>
           </div>
 
-          <!-- Total Area & Fit All -->
+          <!-- Total Area & Total Parcels -->
           <div class="mt-2.5 pt-2 border-t border-white/15 flex items-center justify-between text-xs">
             <div>
               <span class="text-rose-100">Tổng diện tích:</span>
-              <strong id="multiTotalAreaText" class="font-mono text-white ml-1">36.990,0 m² (3,6990 ha)</strong>
+              <strong id="multiTotalAreaText" class="font-mono text-white ml-1">0.00 ha</strong>
             </div>
-            <div class="flex items-center gap-1.5">
-              <span id="multiBadgeOverallDistKm" class="px-2 py-0.5 rounded bg-amber-400/25 border border-amber-300/40 font-mono text-[10px] font-bold text-amber-200">Cột F: -- km</span>
-              <button onclick="fitAllMultiParcels()" class="px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-white font-semibold text-[11px] transition">
-                <i class="fa-solid fa-expand mr-1"></i>Xem toàn bộ
-              </button>
-            </div>
+            <span id="multiBadgeCount" class="text-[11px] bg-black/25 px-2.5 py-0.5 rounded-full font-bold font-mono text-white">3/3 thửa</span>
           </div>
         </div>
 
@@ -538,44 +521,30 @@
             <div class="flex items-center justify-between">
               <h3 class="text-xs font-bold uppercase text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5">
                 <i class="fa-solid fa-route text-indigo-600 dark:text-indigo-400 text-sm"></i>
-                <span>2. Tọa Độ Gốc & Tính Quãng Đường (Cột F)</span>
+                <span>2. Tọa Độ Gốc & Tính Quãng Đường</span>
               </h3>
               <div class="flex items-center gap-1.5">
-                <button onclick="getGPSLocation()" class="px-2 py-1 rounded-lg text-[11px] font-semibold bg-emerald-100 dark:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 flex items-center gap-1 transition shadow-sm" title="Lấy vị trí GPS hiện tại của thiết bị">
-                  <i class="fa-solid fa-crosshairs text-emerald-600"></i> Vị trí
-                </button>
-                <button onclick="togglePickOriginOnMap()" id="btnPickOrigin" class="px-2 py-1 rounded-lg text-[11px] font-semibold bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center gap-1 transition">
+                <button type="button" onclick="togglePickOriginOnMap()" id="btnPickOrigin" class="px-2 py-1 rounded-lg text-[11px] font-semibold bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center gap-1 transition shadow-xs">
                   <i class="fa-solid fa-location-pin"></i> Chấm trên bản đồ
                 </button>
               </div>
             </div>
 
-            <!-- Single Smart Coordinate Input Box -->
+            <!-- Single Smart Coordinate Input Box with Default Reset Icon -->
             <div>
               <label class="block text-[10px] font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Ô nhập Tọa độ gốc (Vĩ độ, Kinh độ hoặc Kinh độ, Vĩ độ):
               </label>
-              <div class="flex gap-1.5">
+              <div class="flex gap-1.5 items-center">
                 <input type="text" id="originQuickInput" value="19.896058, 105.403892" placeholder="VD: 19.896058, 105.403892"
                   onchange="parseQuickOriginInput(this.value)"
                   class="flex-1 px-3 py-1.5 text-xs font-mono rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none">
-                <button onclick="calculateRouteFromOriginToCenter()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5 transition">
+                <button type="button" onclick="resetDefaultOriginPoint()" class="px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 text-indigo-600 dark:text-indigo-400 border border-slate-300 dark:border-slate-600 rounded-lg text-xs font-bold transition flex items-center justify-center shadow-xs" title="Khôi phục Tọa độ gốc mặc định (19.896058, 105.403892)">
+                  <i class="fa-solid fa-location-dot"></i>
+                </button>
+                <button type="button" onclick="calculateRouteFromOriginToCenter()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5 transition">
                   <i class="fa-solid fa-diamond-turn-right"></i> Tính đường
                 </button>
-              </div>
-            </div>
-
-            <!-- Separate Lat / Lng Boxes for Precision -->
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400">Vĩ độ gốc (Lat)</label>
-                <input type="number" step="any" id="originLatInput" value="19.896058" onchange="syncOriginFromLatLngInputs()"
-                  class="w-full mt-0.5 px-2.5 py-1 text-xs font-mono rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
-              </div>
-              <div>
-                <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400">Kinh độ gốc (Lng)</label>
-                <input type="number" step="any" id="originLngInput" value="105.403892" onchange="syncOriginFromLatLngInputs()"
-                  class="w-full mt-0.5 px-2.5 py-1 text-xs font-mono rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800">
               </div>
             </div>
 
@@ -595,12 +564,10 @@
                 <div class="p-2 rounded-lg bg-indigo-50/70 dark:bg-slate-900/60 border border-indigo-100 dark:border-slate-700">
                   <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Quãng đường giao thông</div>
                   <div id="resRoadDistance" class="text-sm font-extrabold font-mono text-indigo-600 dark:text-indigo-400 mt-0.5">-- km</div>
-                  <div id="resRoadExportRound" class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono font-bold">Xuất Cột F: -- km</div>
                 </div>
                 <div class="p-2 rounded-lg bg-rose-50/70 dark:bg-slate-900/60 border border-rose-100 dark:border-slate-700">
                   <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Khoảng cách chim bay</div>
                   <div id="resDirectDistance" class="text-sm font-extrabold font-mono text-rose-600 dark:text-rose-400 mt-0.5">-- km</div>
-                  <div id="resBearing" class="text-[10px] text-slate-500 font-mono">Góc hướng: --°</div>
                 </div>
               </div>
 
@@ -615,22 +582,28 @@
             </div>
           </div>
 
-          <!-- BLOCK 3: XUẤT FILE EXCEL KÈM CỘT D (CENTERPOINT) & CỘT E (QUÃNG ĐƯỜNG KM LÀM TRÒN 1 SỐ) -->
+          <!-- BLOCK 3: BỘ LỌC, KIỂM TRA LỖI & XUẤT FILE -->
           <div class="bg-emerald-50/80 dark:bg-emerald-950/30 rounded-xl p-3.5 border-2 border-emerald-300 dark:border-emerald-800/70 space-y-3 shadow-sm">
             <div class="flex items-center justify-between">
               <h3 class="text-xs font-bold uppercase text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
                 <i class="fa-solid fa-file-export text-emerald-600 dark:text-emerald-400 text-sm"></i>
-                <span>3. Xuất File & Bộ Lọc</span>
+                <span>3. Bộ Lọc, Kiểm Tra Lỗi & Xuất File</span>
               </h3>
-              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">Làm tròn 0.1 km</span>
+              <span id="previewModeBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">Làm tròn 0.1 km</span>
             </div>
 
-            <!-- Smart Filter Controls -->
+            <!-- Smart Filter & Error Check Controls -->
             <div class="bg-white/70 dark:bg-slate-800/70 p-2.5 rounded-lg border border-emerald-200 dark:border-slate-600 space-y-2.5">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase"><i class="fa-solid fa-filter text-emerald-500 mr-1"></i>Lọc dữ liệu hiển thị & Xuất</span>
-                <button onclick="resetFilters()" class="text-[9px] font-semibold text-rose-500 hover:text-rose-600 bg-rose-50 dark:bg-rose-950/30 px-1.5 py-0.5 rounded border border-rose-200 transition">Xóa lọc</button>
+                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase">
+                  <i class="fa-solid fa-filter text-emerald-500 mr-1"></i>Lọc dữ liệu & Kiểm tra lỗi
+                </span>
+                <button type="button" onclick="resetFilters()" class="text-[9px] font-semibold text-rose-500 hover:text-rose-600 bg-rose-50 dark:bg-rose-950/30 px-1.5 py-0.5 rounded border border-rose-200 transition">
+                  Hiện tất cả / Xóa lọc
+                </button>
               </div>
+
+              <!-- Hàng bộ lọc CBĐB & Điểm Mía (liên kết phân cấp) -->
               <div class="grid grid-cols-2 gap-2">
                 <!-- Bộ lọc CBĐB -->
                 <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden relative shadow-xs focus-within:border-emerald-500">
@@ -654,14 +627,46 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Ô tìm kiếm mã thửa -->
               <div class="flex items-center bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden relative shadow-xs focus-within:border-emerald-500">
                 <span class="text-[9px] font-bold text-slate-500 bg-slate-200/50 dark:bg-slate-800 px-2 py-1.5 border-r border-slate-300 dark:border-slate-600"><i class="fa-solid fa-magnifying-glass"></i></span>
                 <input type="text" id="filter-search" oninput="applyFilters('search')" class="w-full text-[10px] px-2 py-1.5 bg-transparent outline-none font-semibold text-slate-700 dark:text-slate-200" placeholder="Tìm Mã số thửa hoặc Mã ID file...">
               </div>
+
+              <!-- Công cụ kiểm tra lỗi (Ngưỡng khoảng cách 8km & Các nút quét lỗi) -->
+              <div class="pt-1 border-t border-slate-200/80 dark:border-slate-700 space-y-2">
+                <div class="flex items-center justify-between gap-1 text-[11px] bg-slate-50/80 dark:bg-slate-900/60 p-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span class="font-semibold text-slate-600 dark:text-slate-400 text-[10px] sm:text-[11px] flex items-center gap-1">
+                    <i class="fa-solid fa-bullseye text-rose-500"></i> Ngưỡng khoảng cách tâm Điểm Mía:
+                  </span>
+                  <div class="flex items-center gap-1">
+                    <input type="number" id="errFilterMaxDistKm" min="1" step="1" value="8" class="w-14 px-1.5 py-0.5 text-center font-mono font-bold text-xs rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 outline-none focus:border-rose-500" title="Nhập số nguyên dương (km)">
+                    <span class="text-[10px] font-bold text-slate-500">km</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <button type="button" id="btnFilterGeometryErrors" onclick="runFilterGeometryErrors()" class="py-2 px-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-[10px] sm:text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-solid fa-draw-polygon"></i>
+                    <span>Lọc thửa sai</span>
+                  </button>
+                  <button type="button" id="btnFilterOutlierParcels" onclick="runFilterOutlierParcels()" class="py-2 px-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-[10px] sm:text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    <span>Lọc thửa xa tâm</span>
+                  </button>
+                </div>
+
+                <!-- Trạng thái lọc lỗi & nút tắt hiệu ứng -->
+                <div id="errorFilterStatusBar" class="hidden flex items-center justify-between text-[10px] px-2 py-1 bg-rose-100/90 dark:bg-rose-900/50 rounded-lg border border-rose-300 dark:border-rose-700 text-rose-800 dark:text-rose-200 font-semibold">
+                  <span id="errorFilterStatusText"><i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1"></i>Đang hiển thị: Thửa sai</span>
+                  <button type="button" onclick="clearErrorFilterMode()" class="text-rose-600 hover:text-rose-800 dark:text-rose-300 underline cursor-pointer ml-1">Tắt lọc lỗi</button>
+                </div>
+              </div>
             </div>
 
             <!-- Options for Export Calculation Mode -->
-            <div class="space-y-1.5 text-[11px] pt-1">
+            <div id="exportOptionsContainer" class="space-y-1.5 text-[11px] pt-1">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <label class="font-semibold text-slate-600 dark:text-slate-400">Loại khoảng cách xuất ở Cột F:</label>
                 <select id="exportDistModeSelect" onchange="updateExcelPreviewTable()" class="px-2 py-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 outline-none cursor-pointer flex-1 sm:max-w-[220px]">
@@ -700,7 +705,7 @@
                       <th class="py-1.5 px-2">Mã số</th>
                       <th class="py-1.5 px-2">Điểm Mía</th>
                       <th class="py-1.5 px-2">CBĐB</th>
-                      <th class="py-1.5 px-2 text-right">Quãng đường (km)</th>
+                      <th id="previewTableCol4Header" class="py-1.5 px-2 text-right">Quãng đường (km)</th>
                       <th class="py-1.5 px-2 text-right">Diện tích (m²)</th>
                       <th class="py-1.5 px-2 text-center"></th>
                     </tr>
@@ -710,134 +715,15 @@
               </div>
             </div>
 
-            <!-- Export Buttons -->
+            <!-- Export & Admin Save Buttons -->
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="exportSubParcelsToExcel('xlsx')" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition">
+              <button id="btnExportExcelMain" onclick="handleUnifiedExcelExport('xlsx')" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition">
                 <i class="fa-solid fa-file-excel"></i>
-                <span>Xuất Excel (.xlsx)</span>
+                <span id="btnExportExcelMainText">Xuất Excel (.xlsx)</span>
               </button>
-              <button onclick="exportSubParcelsToExcel('xls')" class="py-2.5 px-3 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition">
-                <i class="fa-solid fa-download"></i>
-                <span>Xuất land.parcel (.xls)</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- BLOCK 4: QUẢN LÝ THỬA SAI - LỖI -->
-          <div class="bg-rose-50/80 dark:bg-rose-950/30 rounded-xl p-3.5 border-2 border-rose-300 dark:border-rose-800/70 space-y-3 shadow-sm">
-            <div class="flex items-center justify-between">
-              <h3 class="text-xs font-bold uppercase text-rose-900 dark:text-rose-300 flex items-center gap-1.5">
-                <i class="fa-solid fa-triangle-exclamation text-rose-600 dark:text-rose-400 text-sm"></i>
-                <span>4. Quản lý thửa sai - lỗi</span>
-              </h3>
-              <span id="badgeErrorTotalCount" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-500 text-white">0 lỗi</span>
-            </div>
-
-            <!-- Thiết lập tiêu chí tính toán -->
-            <div class="bg-white/80 dark:bg-slate-800/80 p-2.5 rounded-lg border border-rose-200 dark:border-slate-600 space-y-2.5">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase">
-                  <i class="fa-solid fa-sliders text-rose-500 mr-1"></i>Tiêu chí lọc lỗi
-                </span>
-                <button type="button" onclick="resetErrorFilters()" class="text-[9px] font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-600 transition">
-                  Đặt lại
-                </button>
-              </div>
-
-              <!-- Ô nhập khoảng cách (Km) -->
-              <div class="flex items-center justify-between gap-2 text-xs">
-                <label for="errFilterMaxDistKm" class="font-semibold text-slate-600 dark:text-slate-400 text-[11px] whitespace-nowrap">
-                  Ngưỡng khoảng cách tâm (km):
-                </label>
-                <div class="flex items-center gap-1">
-                  <input type="number" id="errFilterMaxDistKm" min="1" step="1" value="5" class="w-16 px-2 py-1 text-center font-mono font-bold text-xs rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400 outline-none focus:border-rose-500" title="Nhập số nguyên dương (km)">
-                  <span class="text-[11px] font-bold text-slate-500">km</span>
-                </div>
-              </div>
-
-              <!-- Bộ lọc liên kết Cán bộ địa bàn & Điểm mía -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Cán bộ địa bàn (CBĐB):</label>
-                  <select id="errFilterCbdb" onchange="applyErrorCascadingFilter('cbdb')" class="w-full px-2 py-1 text-xs rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 outline-none">
-                    <option value="">-- Tất cả CBĐB --</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Điểm mía:</label>
-                  <select id="errFilterDiemmia" onchange="applyErrorCascadingFilter('diemmia')" class="w-full px-2 py-1 text-xs rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 outline-none">
-                    <option value="">-- Tất cả Điểm mía --</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Ô tìm kiếm mã thửa trong bảng lỗi -->
-              <div>
-                <input type="text" id="errFilterSearch" placeholder="Tìm kiếm theo Mã số thửa trong danh sách lỗi..." oninput="filterErrorTableRows()" class="w-full px-2.5 py-1 text-xs rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 outline-none focus:border-rose-500">
-              </div>
-
-              <!-- Nút hành động lọc lỗi -->
-              <div class="grid grid-cols-2 gap-2 pt-1">
-                <button type="button" id="btnFilterGeometryErrors" onclick="runFilterGeometryErrors()" class="py-2 px-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 transition">
-                  <i class="fa-solid fa-draw-polygon"></i>
-                  <span>Lọc thửa sai</span>
-                </button>
-                <button type="button" id="btnFilterOutlierParcels" onclick="runFilterOutlierParcels()" class="py-2 px-2 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-[11px] font-bold shadow-md flex items-center justify-center gap-1.5 transition">
-                  <i class="fa-solid fa-arrows-split-up-and-left"></i>
-                  <span>Lọc thửa xa tâm Điểm mía</span>
-                </button>
-              </div>
-
-              <!-- Trạng thái lọc hiện tại & nút hủy -->
-              <div id="errorFilterStatusBar" class="hidden flex items-center justify-between text-[10px] px-2 py-1 bg-rose-100/80 dark:bg-rose-900/40 rounded border border-rose-300 dark:border-rose-700 text-rose-800 dark:text-rose-200 font-semibold">
-                <span id="errorFilterStatusText"><i class="fa-solid fa-circle-exclamation mr-1"></i>Đang hiển thị: Thửa sai</span>
-                <button type="button" onclick="clearErrorFilterMode()" class="text-rose-600 hover:text-rose-800 dark:text-rose-300 underline cursor-pointer">Tắt hiệu ứng lỗi</button>
-              </div>
-            </div>
-
-            <!-- Bảng danh sách thửa lỗi & Phân trang -->
-            <div class="space-y-1.5 mb-2">
-              <div class="flex items-center justify-between text-[11px] px-0.5 text-slate-600 dark:text-slate-400">
-                <span id="errorPaginationInfo" class="font-medium text-[10px]">Chưa thực hiện lọc lỗi</span>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="changeErrorPage(-1)" class="px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-300 transition shadow-xs" title="Trang trước">
-                    <i class="fa-solid fa-chevron-left"></i>
-                  </button>
-                  <span id="errorCurrentPageText" class="font-mono text-[10px] font-bold text-slate-800 dark:text-slate-200">0 / 0</span>
-                  <button type="button" onclick="changeErrorPage(1)" class="px-2 py-0.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-300 transition shadow-xs" title="Trang sau">
-                    <i class="fa-solid fa-chevron-right"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="overflow-x-auto rounded-lg border border-rose-200 dark:border-rose-900/60 bg-white dark:bg-slate-800 shadow-sm max-h-[350px]">
-                <table class="w-full text-left text-[10px] whitespace-nowrap">
-                  <thead class="sticky top-0 bg-rose-100/90 dark:bg-rose-950/90 backdrop-blur text-rose-900 dark:text-rose-200 font-bold tracking-tighter shadow-sm z-10">
-                    <tr>
-                      <th class="py-1.5 px-2">Mã số</th>
-                      <th class="py-1.5 px-2">Điểm Mía</th>
-                      <th class="py-1.5 px-2">CBĐB</th>
-                      <th class="py-1.5 px-2 text-rose-600 dark:text-rose-400">Loại lỗi / Độ lệch</th>
-                      <th class="py-1.5 px-2 text-right">Diện tích (m²)</th>
-                      <th class="py-1.5 px-2 text-center"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="errorExportPreviewTbody" class="divide-y divide-slate-100 dark:divide-slate-700 font-mono">
-                    <tr>
-                      <td colspan="6" class="py-4 text-center text-slate-400 italic">
-                        Bấm "Lọc thửa sai" hoặc "Lọc thửa xa tâm Điểm mía" để phát hiện các thửa lỗi.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Nút xuất Excel danh sách thửa lỗi -->
-            <div>
-              <button type="button" onclick="exportErrorParcelsToExcel()" class="w-full py-2.5 px-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-2 transition">
-                <i class="fa-solid fa-file-excel"></i>
-                <span>Xuất Excel Danh Sách Thửa Lỗi (.xlsx)</span>
+              <button id="btnAdminSaveDataCustom" onclick="openAdminSaveDataModal()" class="py-2.5 px-3 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition opacity-50 cursor-not-allowed" title="Chức năng 'Chọn Lưu Data' chỉ dành riêng cho tài khoản Quản trị viên (Admin)">
+                <i id="btnAdminSaveDataIcon" class="fa-solid fa-lock"></i>
+                <span id="btnAdminSaveDataText">Chọn Lưu Data</span>
               </button>
             </div>
           </div>
@@ -1612,6 +1498,81 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- MODAL: CHỌN NƠI LƯU DỮ LIỆU GOOGLE SHEET (DÀNH CHO ADMIN)                 -->
+  <!-- ========================================================================= -->
+  <div id="adminSaveDataModal" class="hidden fixed inset-0 z-[10005] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 transition-all">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-5 sm:p-6 space-y-4 relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-teal-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Header with Icon & Title -->
+      <div class="flex items-start gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 flex items-center justify-center text-xl shadow-inner shrink-0">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span>Chọn Nơi Lưu Data</span>
+            <span class="text-[9px] uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 font-bold border border-amber-500/30">Admin</span>
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Lưu danh sách thửa đất đang lọc vào một sheet tùy chọn trên Google Sheet
+          </p>
+        </div>
+        <button type="button" onclick="closeAdminSaveDataModal()" class="w-8 h-8 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-xs transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Parcel Summary Box -->
+      <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700/80 space-y-1.5 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500 dark:text-slate-400 font-medium">Dữ liệu chuẩn bị lưu:</span>
+          <span id="adminSaveDataSummaryBadge" class="font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-700">0 thửa</span>
+        </div>
+        <div id="adminSaveDataFilterInfo" class="text-[11px] text-slate-600 dark:text-slate-300">
+          Tất cả các thửa đang lọc hoặc hiển thị
+        </div>
+      </div>
+
+      <!-- Target Sheet Selector -->
+      <div class="space-y-1.5">
+        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+          Chọn Sheet Data đích trên Google Sheet:
+        </label>
+        <div class="relative">
+          <select id="adminSaveTargetSheetSelect" onchange="handleAdminTargetSheetSelectChange(this.value)" class="w-full py-2.5 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-sm">
+            <option value="data_admin">data_admin (Sheet Quản trị)</option>
+          </select>
+        </div>
+        <!-- Custom sheet name input (nếu chọn "Tạo sheet mới...") -->
+        <div id="adminSaveCustomSheetBox" class="hidden mt-2">
+          <input type="text" id="adminSaveCustomSheetInput" placeholder="Nhập tên sheet mới (ví dụ: data_khu_vuc_moi)..." class="w-full py-2 px-3 rounded-xl border border-amber-400/60 bg-amber-50/40 dark:bg-slate-800 text-slate-900 dark:text-white font-mono text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <p class="text-[10.5px] text-amber-600 dark:text-amber-400 mt-1">Hệ thống sẽ tự động tạo sheet mới này trên Google Sheet nếu chưa tồn tại.</p>
+        </div>
+      </div>
+
+      <!-- Warning note about overwrite -->
+      <div class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 flex items-start gap-2 text-[11.5px] text-amber-800 dark:text-amber-300">
+        <i class="fa-solid fa-triangle-exclamation text-amber-600 dark:text-amber-400 mt-0.5"></i>
+        <span><strong>Ghi đè dữ liệu:</strong> Toàn bộ dữ liệu cũ trên sheet đích được chọn sẽ được thay thế hoàn toàn bằng danh sách thửa đất mới này.</span>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex items-center gap-2.5 pt-1">
+        <button type="button" onclick="closeAdminSaveDataModal()" class="flex-1 py-2.5 px-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition">
+          Hủy bỏ
+        </button>
+        <button type="button" id="btnAdminConfirmSaveData" onclick="executeAdminSaveData()" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold transition shadow-lg shadow-teal-600/30 flex items-center justify-center gap-2">
+          <i id="adminSaveSpinner" class="hidden fa-solid fa-circle-notch fa-spin"></i>
+          <i id="adminSaveBtnIcon" class="fa-solid fa-floppy-disk"></i>
+          <span id="adminSaveBtnText">Xác nhận Lưu Data</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- APPLICATION JAVASCRIPT                                                    -->
   <!-- ========================================================================= -->
   <script>
@@ -1827,6 +1788,7 @@
       initGoogleSheetSyncModule();
       await fetchConnectConfigFromSheet();
       checkLoginSession();
+      updateAdminSaveButtonUI();
     };
 
     function syncWorkspacePaddingWithHeader() {
@@ -3471,8 +3433,10 @@
       });
 
       const totalAreaHa = totalAreaM2 / 10000;
-      document.getElementById('multiTotalAreaText').innerText =
-        `${totalAreaM2.toLocaleString('vi-VN', { maximumFractionDigits: 1 })} m² (${totalAreaHa.toFixed(4)} ha)`;
+      const elMultiTotalArea = document.getElementById('multiTotalAreaText');
+      if (elMultiTotalArea) {
+        elMultiTotalArea.innerText = `${totalAreaHa.toFixed(2)} ha`;
+      }
 
       if (activeParcels.length > 0) {
         const weightSum = totalAreaM2 > 0 ? totalAreaM2 : activeParcels.length;
@@ -4414,9 +4378,25 @@
       }
     }
 
+    const DEFAULT_ORIGIN_POINT = { lat: 19.896058, lng: 105.403892 };
+
+    function panToOrigin() {
+      if (!originPoint || isNaN(originPoint.lat) || isNaN(originPoint.lng) || !map) return;
+      map.flyTo([originPoint.lat, originPoint.lng], 17, { duration: 0.6 });
+    }
+
+    function resetDefaultOriginPoint() {
+      setOriginCoordinates(DEFAULT_ORIGIN_POINT.lat, DEFAULT_ORIGIN_POINT.lng, true);
+      panToOrigin();
+      showToast("Tọa độ gốc mặc định", `Đã khôi phục tọa độ gốc: ${DEFAULT_ORIGIN_POINT.lat}, ${DEFAULT_ORIGIN_POINT.lng}`, "success");
+    }
+
     function syncOriginFromLatLngInputs() {
-      const lat = parseFloat(document.getElementById('originLatInput').value);
-      const lng = parseFloat(document.getElementById('originLngInput').value);
+      const elLat = document.getElementById('originLatInput');
+      const elLng = document.getElementById('originLngInput');
+      if (!elLat || !elLng) return;
+      const lat = parseFloat(elLat.value);
+      const lng = parseFloat(elLng.value);
       if (isNaN(lat) || isNaN(lng)) return;
       setOriginCoordinates(lat, lng, true);
     }
@@ -4426,9 +4406,12 @@
         lat: parseFloat(Number(lat).toFixed(7)),
         lng: parseFloat(Number(lng).toFixed(7))
       };
-      document.getElementById('originLatInput').value = originPoint.lat;
-      document.getElementById('originLngInput').value = originPoint.lng;
-      document.getElementById('originQuickInput').value = `${originPoint.lat}, ${originPoint.lng}`;
+      const elLat = document.getElementById('originLatInput');
+      if (elLat) elLat.value = originPoint.lat;
+      const elLng = document.getElementById('originLngInput');
+      if (elLng) elLng.value = originPoint.lng;
+      const elQuick = document.getElementById('originQuickInput');
+      if (elQuick) elQuick.value = `${originPoint.lat}, ${originPoint.lng}`;
 
       renderOriginMarkerOnMap();
       if (triggerRoute) {
@@ -4466,7 +4449,8 @@
       }
 
       document.getElementById('resDirectDistance').innerText = `${directKm.toFixed(2)} km`;
-      document.getElementById('resBearing').innerText = `Góc hướng: ${bearingDeg.toFixed(1)}°`;
+      const elBearing = document.getElementById('resBearing');
+      if (elBearing) elBearing.innerText = `Góc hướng: ${bearingDeg.toFixed(1)}°`;
 
       document.getElementById('googleMapsDirLink').href =
         `https://www.google.com/maps/dir/?api=1&origin=${originPoint.lat},${originPoint.lng}&destination=${overallCenterPoint.lat},${overallCenterPoint.lng}&travelmode=driving`;
@@ -4528,8 +4512,10 @@
           }
 
           document.getElementById('resRoadDistance').innerText = `${roadKm.toFixed(2)} km`;
-          document.getElementById('resRoadExportRound').innerText = `Xuất Cột F: ${roadKmRound1} km`;
-          document.getElementById('multiBadgeOverallDistKm').innerText = `Cột F: ${roadKmRound1} km`;
+          const elExpRound1 = document.getElementById('resRoadExportRound');
+          if (elExpRound1) elExpRound1.innerText = `Xuất Cột F: ${roadKmRound1} km`;
+          const elMultiDist1 = document.getElementById('multiBadgeOverallDistKm');
+          if (elMultiDist1) elMultiDist1.innerText = `Cột F: ${roadKmRound1} km`;
           statusBadge.innerText = "Đường bộ OSRM";
           statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300";
         } else {
@@ -4548,8 +4534,10 @@
         }
         const roadKmRound1 = (Math.round(estRoadKm * 10) / 10).toFixed(1);
         document.getElementById('resRoadDistance').innerText = `${estRoadKm.toFixed(2)} km`;
-        document.getElementById('resRoadExportRound').innerText = `Xuất Cột F: ${roadKmRound1} km`;
-        document.getElementById('multiBadgeOverallDistKm').innerText = `Cột F: ${roadKmRound1} km`;
+        const elExpRound2 = document.getElementById('resRoadExportRound');
+        if (elExpRound2) elExpRound2.innerText = `Xuất Cột F: ${roadKmRound1} km`;
+        const elMultiDist2 = document.getElementById('multiBadgeOverallDistKm');
+        if (elMultiDist2) elMultiDist2.innerText = `Cột F: ${roadKmRound1} km`;
         statusBadge.innerText = "Đường bộ (Ước tính)";
         statusBadge.className = "text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700";
       }
@@ -4646,6 +4634,125 @@
       const tbody = document.getElementById('excelExportPreviewTbody');
       if (!tbody) return;
       tbody.innerHTML = '';
+
+      const pCol4Header = document.getElementById('previewTableCol4Header');
+      const pModeBadge = document.getElementById('previewModeBadge');
+      const pExportBtnText = document.getElementById('btnExportExcelMainText');
+      const pExportBtn = document.getElementById('btnExportExcelMain');
+      const pExportOptions = document.getElementById('exportOptionsContainer');
+
+      // NẾU ĐANG Ở CHẾ ĐỘ LỌC LỖI (GEOMETRY HOẶC OUTLIER)
+      if (errorFilterActiveMode !== null) {
+        if (pCol4Header) {
+          pCol4Header.innerText = 'Loại lỗi / Độ lệch';
+          pCol4Header.className = 'py-1.5 px-2 text-rose-600 dark:text-rose-400 font-bold';
+        }
+        if (pModeBadge) {
+          pModeBadge.innerText = `${errorDetectedParcels.length} lỗi`;
+          pModeBadge.className = errorDetectedParcels.length > 0
+            ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-600 text-white animate-pulse'
+            : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white';
+        }
+        if (pExportBtnText) pExportBtnText.innerText = 'Xuất Excel Thửa Lỗi (.xlsx)';
+        if (pExportBtn) {
+          pExportBtn.className = 'py-2.5 px-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition';
+        }
+        if (pExportOptions) pExportOptions.classList.add('hidden');
+
+        const fSearch = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
+        const filteredList = errorDetectedParcels.filter(item => {
+          if (!fSearch) return true;
+          const p = item.parcel;
+          return (p.code || '').toLowerCase().includes(fSearch) ||
+                 (p.externalId || '').toLowerCase().includes(fSearch) ||
+                 (p.diemCanhTac || '').toLowerCase().includes(fSearch) ||
+                 (item.reason || '').toLowerCase().includes(fSearch);
+        });
+
+        const total = filteredList.length;
+        const totalPages = Math.max(1, Math.ceil(total / PREVIEW_PAGE_SIZE));
+        if (excelPreviewCurrentPage > totalPages) excelPreviewCurrentPage = totalPages;
+        if (excelPreviewCurrentPage < 1) excelPreviewCurrentPage = 1;
+
+        const pInfo = document.getElementById('previewPaginationInfo');
+        if (pInfo) {
+          if (total === 0) {
+            pInfo.innerText = 'Không phát hiện thửa lỗi nào!';
+          } else {
+            const start = (excelPreviewCurrentPage - 1) * PREVIEW_PAGE_SIZE + 1;
+            const end = Math.min(excelPreviewCurrentPage * PREVIEW_PAGE_SIZE, total);
+            pInfo.innerText = `Lỗi: ${start}-${end} / ${total} thửa (Tổng ${total})`;
+          }
+        }
+        const pPage = document.getElementById('previewCurrentPageText');
+        if (pPage) {
+          pPage.innerText = total > 0 ? `${excelPreviewCurrentPage} / ${totalPages}` : `0 / 0`;
+        }
+
+        if (total === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-400 italic">Tuyệt vời! Không phát hiện thửa nào bị lỗi theo tiêu chí đã chọn.</td></tr>`;
+          return;
+        }
+
+        const pageItems = filteredList.slice(
+          (excelPreviewCurrentPage - 1) * PREVIEW_PAGE_SIZE,
+          excelPreviewCurrentPage * PREVIEW_PAGE_SIZE
+        );
+
+        const fragment = document.createDocumentFragment();
+        pageItems.forEach(item => {
+          const p = item.parcel;
+          let gmapsLink = '#';
+          if (!isNaN(originPoint.lat) && !isNaN(originPoint.lng) && p.centroidLat && p.centroidLng) {
+            gmapsLink = `https://www.google.com/maps/dir/?api=1&origin=${originPoint.lat},${originPoint.lng}&destination=${p.centroidLat},${p.centroidLng}&travelmode=driving`;
+          }
+
+          const tr = document.createElement('tr');
+          tr.className = "text-slate-700 dark:text-slate-200 hover:bg-rose-50/70 dark:hover:bg-rose-950/30 transition";
+          tr.innerHTML = `
+            <td class="py-1.5 px-2 truncate max-w-[100px] font-semibold text-rose-600 dark:text-rose-400 font-mono">${p.code || ''}</td>
+            <td class="py-1.5 px-2 truncate max-w-[100px]">${p.diemCanhTac ? `<span class="inline-block w-2 h-2 rounded-full mr-1 align-middle" style="background:${getColorForDiemCanhTac(p.diemCanhTac)}"></span>` : ''}<span>${p.diemCanhTac || ''}</span></td>
+            <td class="py-1.5 px-2 truncate max-w-[90px] text-slate-500">${p.canBoDiaBan || ''}</td>
+            <td class="py-1.5 px-2 max-w-[160px]">
+              <div class="font-bold text-rose-600 truncate" title="${item.details}">${item.reason}</div>
+              <div class="text-[9px] text-slate-400 truncate">${item.details}</div>
+            </td>
+            <td class="py-1.5 px-2 text-right font-extrabold text-slate-700 dark:text-slate-300">${(p.areaM2 || 0).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}</td>
+            <td class="py-1.5 px-2 text-center whitespace-nowrap">
+              <button onclick="focusSubParcelByCode('${p.code}')" class="text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 p-1 rounded hover:bg-blue-50 dark:hover:bg-slate-700 transition" title="Phóng tới thửa này trên bản đồ">
+                <i class="fa-solid fa-crosshairs"></i>
+              </button>
+              <button onclick="editSubParcelByCode('${p.code}')" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-400 p-1 rounded hover:bg-emerald-50 dark:hover:bg-slate-700 transition" title="Nắn sửa đỉnh (Chế độ 2)">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <a href="${gmapsLink}" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 transition inline-block p-1 rounded hover:bg-indigo-100 dark:hover:bg-slate-700" title="Chỉ đường bằng Google Maps">
+                <i class="fa-solid fa-diamond-turn-right"></i>
+              </a>
+              <button onclick="deleteSubParcelByCode('${p.code}')" class="text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-slate-700 transition" title="Xóa thửa này">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+          fragment.appendChild(tr);
+        });
+        tbody.appendChild(fragment);
+        return;
+      }
+
+      // CHẾ ĐỘ XEM THÔNG THƯỜNG
+      if (pCol4Header) {
+        pCol4Header.innerText = 'Quãng đường (km)';
+        pCol4Header.className = 'py-1.5 px-2 text-right text-slate-600 dark:text-slate-400';
+      }
+      if (pModeBadge) {
+        pModeBadge.innerText = 'Làm tròn 0.1 km';
+        pModeBadge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white';
+      }
+      if (pExportBtnText) pExportBtnText.innerText = 'Xuất Excel (.xlsx)';
+      if (pExportBtn) {
+        pExportBtn.className = 'py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow flex items-center justify-center gap-1.5 transition';
+      }
+      if (pExportOptions) pExportOptions.classList.remove('hidden');
 
       const allRows = getFormattedExportRows();
       if (allRows.length === 0) {
@@ -4820,6 +4927,14 @@
       const filename = ext === 'xls' ? 'land.parcel.export.xls' : 'land.parcel.export.xlsx';
       XLSX.writeFile(wb, filename);
       showToast("Đã xuất File Excel thành công!", `Đã lưu "${filename}" với cấu trúc 8 cột chuẩn.`);
+    }
+
+    function handleUnifiedExcelExport(ext = 'xlsx') {
+      if (errorFilterActiveMode !== null && ext === 'xlsx') {
+        exportErrorParcelsToExcel();
+      } else {
+        exportSubParcelsToExcel(ext);
+      }
     }
 
     function downloadTemplateLandParcelXls() {
@@ -5250,7 +5365,6 @@
 
     function populateFilters() {
       updateCascadingFilterOptions();
-      updateErrorCascadingFilterOptions();
     }
 
     function applyFilters(changedField = null) {
@@ -5258,6 +5372,16 @@
 
       // Khi người dùng trực tiếp thay đổi 1 trường, cập nhật ràng buộc danh sách trước
       updateCascadingFilterOptions(changedField);
+
+      // Nếu đang ở chế độ lọc lỗi, quét lại danh sách lỗi theo bộ lọc mới
+      if (errorFilterActiveMode === 'geometry') {
+        runFilterGeometryErrors();
+        return;
+      }
+      if (errorFilterActiveMode === 'outlier') {
+        runFilterOutlierParcels();
+        return;
+      }
 
       const fCbdb = (document.getElementById('filter-cbdb')?.value || '').toLowerCase().trim();
       const fDiemmia = (document.getElementById('filter-diemmia')?.value || '').toLowerCase().trim();
@@ -5298,103 +5422,24 @@
       const fCbdb = document.getElementById('filter-cbdb');
       const fDiemmia = document.getElementById('filter-diemmia');
       const fSearch = document.getElementById('filter-search');
+      const fDist = document.getElementById('errFilterMaxDistKm');
       if (fCbdb) fCbdb.value = '';
       if (fDiemmia) fDiemmia.value = '';
       if (fSearch) fSearch.value = '';
+      if (fDist) fDist.value = '8';
+
+      // Tắt chế độ lọc lỗi nếu đang bật
+      errorFilterActiveMode = null;
+      errorDetectedParcels = [];
+      if (errorParcelsLayer) errorParcelsLayer.clearLayers();
+      const statusBar = document.getElementById('errorFilterStatusBar');
+      if (statusBar) statusBar.classList.add('hidden');
+
       applyFilters();
       updateCascadingFilterOptions();
       setTimeout(() => {
         fitAllMultiParcels();
       }, 100);
-    }
-
-    // =========================================================================
-    // PHẦN 2.5: QUẢN LÝ THỬA SAI - LỖI (BLOCK 4)
-    // =========================================================================
-
-    function updateErrorCascadingFilterOptions(activeField = null) {
-      const elCbdb = document.getElementById('errFilterCbdb');
-      const elDiemmia = document.getElementById('errFilterDiemmia');
-      if (!elCbdb || !elDiemmia) return;
-
-      const curCbdb = elCbdb.value.trim();
-      const curDiemmia = elDiemmia.value.trim();
-      const fCbdbLower = curCbdb.toLowerCase();
-      const fDiemmiaLower = curDiemmia.toLowerCase();
-
-      const allCbdbs = new Set();
-      const allDiemmias = new Set();
-      const matchedCbdbs = new Set();
-      const matchedDiemmias = new Set();
-
-      subParcels.forEach(p => {
-        const pCbdb = (p.canBoDiaBan || '').trim();
-        const pDiemmia = (p.diemCanhTac || '').trim();
-
-        if (pCbdb) allCbdbs.add(pCbdb);
-        if (pDiemmia) allDiemmias.add(pDiemmia);
-
-        const matchCbdb = !curCbdb || pCbdb.toLowerCase() === fCbdbLower;
-        const matchDiemmia = !curDiemmia || pDiemmia.toLowerCase() === fDiemmiaLower;
-
-        if (matchCbdb && pDiemmia) matchedDiemmias.add(pDiemmia);
-        if (matchDiemmia && pCbdb) matchedCbdbs.add(pCbdb);
-      });
-
-      // Cập nhật danh sách CBĐB nếu người dùng không thao tác trực tiếp trên ô CBĐB
-      if (activeField !== 'cbdb') {
-        const targetCbdbs = curDiemmia ? matchedCbdbs : allCbdbs;
-        const sortedCbdbs = Array.from(targetCbdbs).sort((a, b) => a.localeCompare(b, 'vi'));
-        let cbdbOptionsHtml = '<option value="">-- Tất cả CBĐB --</option>';
-        sortedCbdbs.forEach(val => {
-          const isSelected = (val === curCbdb);
-          cbdbOptionsHtml += `<option value="${val}" ${isSelected ? 'selected' : ''}>${val}</option>`;
-        });
-        elCbdb.innerHTML = cbdbOptionsHtml;
-
-        if (curCbdb && !targetCbdbs.has(curCbdb)) {
-          elCbdb.value = '';
-        }
-      }
-
-      // Cập nhật danh sách Điểm Mía nếu người dùng không thao tác trực tiếp trên ô Điểm Mía
-      if (activeField !== 'diemmia') {
-        const targetDiemmias = curCbdb ? matchedDiemmias : allDiemmias;
-        const sortedDiemmias = Array.from(targetDiemmias).sort((a, b) => a.localeCompare(b, 'vi'));
-        let diemmiaOptionsHtml = '<option value="">-- Tất cả Điểm mía --</option>';
-        sortedDiemmias.forEach(val => {
-          const isSelected = (val === curDiemmia);
-          diemmiaOptionsHtml += `<option value="${val}" ${isSelected ? 'selected' : ''}>${val}</option>`;
-        });
-        elDiemmia.innerHTML = diemmiaOptionsHtml;
-
-        if (curDiemmia && !targetDiemmias.has(curDiemmia)) {
-          elDiemmia.value = '';
-        }
-      }
-    }
-
-    function applyErrorCascadingFilter(changedField) {
-      updateErrorCascadingFilterOptions(changedField);
-      // Tự động quét lại danh sách lỗi tương ứng với tiêu chí mới
-      if (errorFilterActiveMode === 'geometry') {
-        runFilterGeometryErrors();
-      } else if (errorFilterActiveMode === 'outlier') {
-        runFilterOutlierParcels();
-      }
-    }
-
-    function resetErrorFilters() {
-      const elCbdb = document.getElementById('errFilterCbdb');
-      const elDiemmia = document.getElementById('errFilterDiemmia');
-      const elSearch = document.getElementById('errFilterSearch');
-      const elDist = document.getElementById('errFilterMaxDistKm');
-      if (elCbdb) elCbdb.value = '';
-      if (elDiemmia) elDiemmia.value = '';
-      if (elSearch) elSearch.value = '';
-      if (elDist) elDist.value = '5';
-      updateErrorCascadingFilterOptions();
-      clearErrorFilterMode();
     }
 
     // Thuật toán phát hiện lỗi hình học (chéo cạnh hoặc đè tọa độ điểm)
@@ -5500,22 +5545,26 @@
       return centroids;
     }
 
-    // Lọc tất cả thửa bị chéo cạnh hoặc đè tọa độ
+    // Lọc tất cả thửa bị chéo cạnh hoặc đè tọa độ đỉnh
     function runFilterGeometryErrors() {
       if (subParcels.length === 0) {
         showToast("Không có dữ liệu", "Chưa có thửa nào để kiểm tra lỗi!", "warning");
         return;
       }
 
-      const curCbdb = (document.getElementById('errFilterCbdb')?.value || '').toLowerCase().trim();
-      const curDiemmia = (document.getElementById('errFilterDiemmia')?.value || '').toLowerCase().trim();
+      const curCbdb = (document.getElementById('filter-cbdb')?.value || '').toLowerCase().trim();
+      const curDiemmia = (document.getElementById('filter-diemmia')?.value || '').toLowerCase().trim();
+      const curSearch = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
 
       const candidates = subParcels.filter(p => {
         const pCbdb = (p.canBoDiaBan || '').toLowerCase().trim();
         const pDm = (p.diemCanhTac || '').toLowerCase().trim();
+        const pCode = (p.code || '').toLowerCase().trim();
+        const pExtId = (p.externalId || '').toLowerCase().trim();
         const matchCbdb = !curCbdb || pCbdb === curCbdb;
         const matchDm = !curDiemmia || pDm === curDiemmia;
-        return matchCbdb && matchDm;
+        const matchSearch = !curSearch || pCode.includes(curSearch) || pExtId.includes(curSearch);
+        return matchCbdb && matchDm && matchSearch;
       });
 
       const errors = [];
@@ -5534,7 +5583,7 @@
 
       errorDetectedParcels = errors;
       errorFilterActiveMode = 'geometry';
-      errorPreviewCurrentPage = 1;
+      excelPreviewCurrentPage = 1;
 
       const statusBar = document.getElementById('errorFilterStatusBar');
       const statusText = document.getElementById('errorFilterStatusText');
@@ -5543,15 +5592,7 @@
         statusText.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1"></i>Đang lọc thửa sai hình học: Tìm thấy <strong>${errors.length}</strong> thửa lỗi`;
       }
 
-      const badge = document.getElementById('badgeErrorTotalCount');
-      if (badge) {
-        badge.innerText = `${errors.length} lỗi`;
-        badge.className = errors.length > 0 
-          ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-600 text-white animate-pulse'
-          : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white';
-      }
-
-      updateErrorPreviewTable();
+      updateExcelPreviewTable();
       renderErrorParcelsOnMap();
 
       if (errors.length > 0) {
@@ -5561,7 +5602,7 @@
       }
     }
 
-    // Lọc thửa xa trung tâm Điểm Mía theo đường chim bay
+    // Lọc thửa xa trung tâm Điểm Mía theo đường chim bay (ngưỡng km, mặc định 8 km)
     function runFilterOutlierParcels() {
       if (subParcels.length === 0) {
         showToast("Không có dữ liệu", "Chưa có thửa nào để kiểm tra khoảng cách!", "warning");
@@ -5569,14 +5610,15 @@
       }
 
       const inputEl = document.getElementById('errFilterMaxDistKm');
-      let maxKm = parseInt(inputEl ? inputEl.value : '5', 10);
+      let maxKm = parseInt(inputEl ? inputEl.value : '8', 10);
       if (isNaN(maxKm) || maxKm <= 0) {
-        maxKm = 5;
-        if (inputEl) inputEl.value = '5';
+        maxKm = 8;
+        if (inputEl) inputEl.value = '8';
       }
 
-      const curCbdb = (document.getElementById('errFilterCbdb')?.value || '').toLowerCase().trim();
-      const curDiemmia = (document.getElementById('errFilterDiemmia')?.value || '').toLowerCase().trim();
+      const curCbdb = (document.getElementById('filter-cbdb')?.value || '').toLowerCase().trim();
+      const curDiemmia = (document.getElementById('filter-diemmia')?.value || '').toLowerCase().trim();
+      const curSearch = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
 
       // Đảm bảo tất cả các thửa đã được cache tâm
       subParcels.forEach(p => {
@@ -5591,9 +5633,12 @@
       const candidates = subParcels.filter(p => {
         const pCbdb = (p.canBoDiaBan || '').toLowerCase().trim();
         const pDm = (p.diemCanhTac || '').toLowerCase().trim();
+        const pCode = (p.code || '').toLowerCase().trim();
+        const pExtId = (p.externalId || '').toLowerCase().trim();
         const matchCbdb = !curCbdb || pCbdb === curCbdb;
         const matchDm = !curDiemmia || pDm === curDiemmia;
-        return matchCbdb && matchDm;
+        const matchSearch = !curSearch || pCode.includes(curSearch) || pExtId.includes(curSearch);
+        return matchCbdb && matchDm && matchSearch;
       });
 
       const outliers = [];
@@ -5625,7 +5670,7 @@
 
       errorDetectedParcels = outliers;
       errorFilterActiveMode = 'outlier';
-      errorPreviewCurrentPage = 1;
+      excelPreviewCurrentPage = 1;
 
       const statusBar = document.getElementById('errorFilterStatusBar');
       const statusText = document.getElementById('errorFilterStatusText');
@@ -5634,15 +5679,7 @@
         statusText.innerHTML = `<i class="fa-solid fa-arrows-split-up-and-left text-amber-500 mr-1"></i>Đang lọc thửa xa tâm Đ.Mía (> ${maxKm} km): Tìm thấy <strong>${outliers.length}</strong> thửa`;
       }
 
-      const badge = document.getElementById('badgeErrorTotalCount');
-      if (badge) {
-        badge.innerText = `${outliers.length} thửa xa`;
-        badge.className = outliers.length > 0
-          ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-600 text-white animate-pulse'
-          : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-600 text-white';
-      }
-
-      updateErrorPreviewTable();
+      updateExcelPreviewTable();
       renderErrorParcelsOnMap();
 
       if (outliers.length > 0) {
@@ -5656,23 +5693,17 @@
     function clearErrorFilterMode() {
       errorFilterActiveMode = null;
       errorDetectedParcels = [];
-      errorPreviewCurrentPage = 1;
+      excelPreviewCurrentPage = 1;
       if (errorParcelsLayer) errorParcelsLayer.clearLayers();
 
       const statusBar = document.getElementById('errorFilterStatusBar');
       if (statusBar) statusBar.classList.add('hidden');
 
-      const badge = document.getElementById('badgeErrorTotalCount');
-      if (badge) {
-        badge.innerText = '0 lỗi';
-        badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-500 text-white';
-      }
-
-      updateErrorPreviewTable();
+      updateExcelPreviewTable();
       fitAllMultiParcels();
     }
 
-    // Hiển thị các thửa lỗi lên bản đồ kèm hiệu ứng nhấp nháy to nhỏ
+    // Hiển thị các thửa lỗi lên bản đồ kèm hiệu ứng nhấp nháy chậm hơn, hình nhỏ hơn và độ trong suốt 50%
     function renderErrorParcelsOnMap() {
       if (!errorParcelsLayer || !map) return;
       errorParcelsLayer.clearLayers();
@@ -5686,32 +5717,33 @@
         if (!p.coordinates || p.coordinates.length < 3) return;
 
         const latlngs = p.coordinates.map(pt => [pt[1], pt[0]]);
+        // Độ trong suốt 50%, viền nhỏ hơn và nhấp nháy chậm theo yêu cầu
         const poly = L.polygon(latlngs, {
           className: 'error-polygon-pulsing',
           color: '#ef4444',
-          weight: 3.5,
+          weight: 2.5,
           fillColor: '#f97316',
-          fillOpacity: 0.55
+          fillOpacity: 0.50
         }).addTo(errorParcelsLayer);
 
         bounds.extend(poly.getBounds());
 
-        // Thêm marker cảnh báo nhấp nháy tại tâm thửa
+        // Marker cảnh báo nhấp nháy nhỏ gọn tại tâm thửa (độ trong suốt ~50%)
         if (p.centroidLat !== undefined && p.centroidLng !== undefined) {
           const pinIcon = L.divIcon({
             className: 'flex items-center justify-center',
             html: `
-              <div class="error-pin-anim flex flex-col items-center justify-center cursor-pointer" style="width:40px;height:40px;">
-                <div class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg border-2 border-white">
-                  <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+              <div class="error-pin-anim flex flex-col items-center justify-center cursor-pointer" style="width:28px;height:28px;">
+                <div class="w-5 h-5 rounded-full bg-rose-600/90 text-white flex items-center justify-center shadow-md border border-white">
+                  <i class="fa-solid fa-triangle-exclamation text-[9px]"></i>
                 </div>
-                <span class="mt-0.5 px-1 py-0.2 bg-black/80 text-yellow-300 font-mono text-[8px] font-bold rounded shadow leading-none whitespace-nowrap">
+                <span class="mt-0.5 px-1 py-0.2 bg-black/75 text-yellow-300 font-mono text-[7px] font-bold rounded shadow leading-none whitespace-nowrap">
                   ${p.code || 'LỖI'}
                 </span>
               </div>
             `,
-            iconSize: [40, 40],
-            iconAnchor: [20, 20]
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
           });
 
           const pinMarker = L.marker([p.centroidLat, p.centroidLng], {
@@ -5750,119 +5782,6 @@
       if (bounds.isValid()) {
         map.fitBounds(bounds, { padding: [60, 60], maxZoom: 17 });
       }
-    }
-
-    // Cập nhật bảng danh sách xem trước các thửa lỗi
-    function updateErrorPreviewTable() {
-      const tbody = document.getElementById('errorExportPreviewTbody');
-      if (!tbody) return;
-      tbody.innerHTML = '';
-
-      const fSearch = (document.getElementById('errFilterSearch')?.value || '').toLowerCase().trim();
-      const filteredList = errorDetectedParcels.filter(item => {
-        if (!fSearch) return true;
-        const p = item.parcel;
-        return (p.code || '').toLowerCase().includes(fSearch) ||
-               (p.externalId || '').toLowerCase().includes(fSearch) ||
-               (p.diemCanhTac || '').toLowerCase().includes(fSearch) ||
-               (item.reason || '').toLowerCase().includes(fSearch);
-      });
-
-      const total = filteredList.length;
-      const totalPages = Math.max(1, Math.ceil(total / ERROR_PREVIEW_PAGE_SIZE));
-      if (errorPreviewCurrentPage > totalPages) errorPreviewCurrentPage = totalPages;
-      if (errorPreviewCurrentPage < 1) errorPreviewCurrentPage = 1;
-
-      const pInfo = document.getElementById('errorPaginationInfo');
-      if (pInfo) {
-        if (!errorFilterActiveMode) {
-          pInfo.innerText = 'Chưa thực hiện lọc lỗi';
-        } else if (total === 0) {
-          pInfo.innerText = 'Không phát hiện thửa lỗi nào!';
-        } else {
-          const start = (errorPreviewCurrentPage - 1) * ERROR_PREVIEW_PAGE_SIZE + 1;
-          const end = Math.min(errorPreviewCurrentPage * ERROR_PREVIEW_PAGE_SIZE, total);
-          pInfo.innerText = `Hiển thị ${start}-${end} / ${total} thửa lỗi (Tổng ${total})`;
-        }
-      }
-
-      const pPage = document.getElementById('errorCurrentPageText');
-      if (pPage) {
-        pPage.innerText = total > 0 ? `${errorPreviewCurrentPage} / ${totalPages}` : `0 / 0`;
-      }
-
-      if (total === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="6" class="py-4 text-center text-slate-400 italic">
-              ${!errorFilterActiveMode 
-                ? 'Bấm "Lọc thửa sai" hoặc "Lọc thửa xa tâm Điểm mía" để phát hiện các thửa lỗi.' 
-                : 'Tuyệt vời! Không phát hiện thửa nào bị lỗi theo tiêu chí đã chọn.'}
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      const pageItems = filteredList.slice(
-        (errorPreviewCurrentPage - 1) * ERROR_PREVIEW_PAGE_SIZE,
-        errorPreviewCurrentPage * ERROR_PREVIEW_PAGE_SIZE
-      );
-
-      const fragment = document.createDocumentFragment();
-      pageItems.forEach(item => {
-        const p = item.parcel;
-        let gmapsLink = '#';
-        if (!isNaN(originPoint.lat) && !isNaN(originPoint.lng) && p.centroidLat && p.centroidLng) {
-          gmapsLink = `https://www.google.com/maps/dir/?api=1&origin=${originPoint.lat},${originPoint.lng}&destination=${p.centroidLat},${p.centroidLng}&travelmode=driving`;
-        }
-
-        const tr = document.createElement('tr');
-        tr.className = "text-slate-700 dark:text-slate-200 hover:bg-rose-50/70 dark:hover:bg-rose-950/30 transition";
-        tr.innerHTML = `
-          <td class="py-1.5 px-2 truncate max-w-[100px] font-semibold text-rose-600 dark:text-rose-400 font-mono">
-            ${p.code || ''}
-          </td>
-          <td class="py-1.5 px-2 truncate max-w-[100px]">
-            ${p.diemCanhTac ? `<span class="inline-block w-2 h-2 rounded-full mr-1 align-middle" style="background:${getColorForDiemCanhTac(p.diemCanhTac)}"></span>` : ''}
-            <span>${p.diemCanhTac || ''}</span>
-          </td>
-          <td class="py-1.5 px-2 truncate max-w-[90px] text-slate-500">${p.canBoDiaBan || ''}</td>
-          <td class="py-1.5 px-2 max-w-[160px]">
-            <div class="font-bold text-rose-600 truncate" title="${item.details}">${item.reason}</div>
-            <div class="text-[9px] text-slate-400 truncate">${item.details}</div>
-          </td>
-          <td class="py-1.5 px-2 text-right font-extrabold text-slate-700 dark:text-slate-300">
-            ${(p.areaM2 || 0).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}
-          </td>
-          <td class="py-1.5 px-2 text-center whitespace-nowrap">
-            <button onclick="focusSubParcelByCode('${p.code}')" class="text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 p-1 rounded hover:bg-blue-50 dark:hover:bg-slate-700 transition" title="Phóng tới thửa này trên bản đồ">
-              <i class="fa-solid fa-crosshairs"></i>
-            </button>
-            <button onclick="editSubParcelByCode('${p.code}')" class="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-400 p-1 rounded hover:bg-emerald-50 dark:hover:bg-slate-700 transition" title="Nắn sửa đỉnh (Chế độ 2)">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <a href="${gmapsLink}" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 transition inline-block p-1 rounded hover:bg-indigo-100 dark:hover:bg-slate-700" title="Chỉ đường bằng Google Maps">
-              <i class="fa-solid fa-diamond-turn-right"></i>
-            </a>
-            <button onclick="deleteSubParcelByCode('${p.code}')" class="text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 p-1 rounded hover:bg-rose-50 dark:hover:bg-slate-700 transition" title="Xóa thửa này">
-              <i class="fa-regular fa-trash-can"></i>
-            </button>
-          </td>
-        `;
-        fragment.appendChild(tr);
-      });
-      tbody.appendChild(fragment);
-    }
-
-    function changeErrorPage(delta) {
-      errorPreviewCurrentPage += delta;
-      updateErrorPreviewTable();
-    }
-
-    function filterErrorTableRows() {
-      errorPreviewCurrentPage = 1;
-      updateErrorPreviewTable();
     }
 
     // Xuất Excel danh sách các thửa bị lỗi
@@ -6546,6 +6465,7 @@ function jsonResponse(obj) {
       } else {
         showToast(`Xin chào, ${user.name || user.email}!`, `Đăng nhập thành công • Kết nối với sheet riêng: [${user.dataSheet || 'data'}].`);
       }
+      updateAdminSaveButtonUI();
     }
 
     // Tự động tải dữ liệu từ sheet data_demo cho tài khoản Demo
@@ -6705,11 +6625,28 @@ function jsonResponse(obj) {
           adminSel.appendChild(opt);
         });
 
+        const modalSel = document.getElementById('adminSaveTargetSheetSelect');
+        if (modalSel) {
+          modalSel.innerHTML = '';
+          sheetMap.forEach((label, val) => {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.innerText = label;
+            modalSel.appendChild(opt);
+          });
+          const optNew = document.createElement('option');
+          optNew.value = '__custom__';
+          optNew.innerText = '+ Nhập tên sheet mới...';
+          modalSel.appendChild(optNew);
+        }
+
         if (currentUser.dataSheet && sheetMap.has(currentUser.dataSheet)) {
           adminSel.value = currentUser.dataSheet;
+          if (modalSel) modalSel.value = currentUser.dataSheet;
         } else {
           adminSel.value = 'data_admin';
           currentUser.dataSheet = 'data_admin';
+          if (modalSel) modalSel.value = 'data_admin';
         }
       } catch (err) {
         console.warn("Không thể tải danh sách data_sheet từ sheet account:", err);
@@ -6728,6 +6665,264 @@ function jsonResponse(obj) {
       if (btnSyncSheet) btnSyncSheet.title = `Tải dữ liệu từ sheet riêng "${newSheet}" về Bản đồ`;
       showToast("Chuyển sheet làm việc", `Đang tự động đồng bộ dữ liệu từ sheet [${newSheet}]...`);
       await syncDataFromGoogleSheet();
+    }
+
+    // =========================================================================
+    // CHỨC NĂNG: CHỌN LƯU DATA LÊN GOOGLE SHEET (DÀNH CHO ADMIN)
+    // =========================================================================
+
+    // Cập nhật trạng thái hiển thị của nút "Chọn Lưu Data" theo quyền Admin
+    function updateAdminSaveButtonUI() {
+      const btn = document.getElementById('btnAdminSaveDataCustom');
+      const icon = document.getElementById('btnAdminSaveDataIcon');
+      if (!btn) return;
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      if (isAdmin) {
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btn.classList.add('cursor-pointer');
+        btn.title = "Lưu danh sách thửa đất hiện tại vào Data đích tùy chọn (Dành cho Admin)";
+        if (icon) icon.className = "fa-solid fa-database";
+      } else {
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.classList.remove('cursor-pointer');
+        btn.title = "Chức năng 'Chọn Lưu Data' chỉ dành riêng cho tài khoản Quản trị viên (Admin)";
+        if (icon) icon.className = "fa-solid fa-lock";
+      }
+    }
+
+    // Lấy tập hợp các thửa đang được lọc / hiển thị
+    function getCurrentFilteredParcels() {
+      if (errorFilterActiveMode !== null) {
+        return (errorDetectedParcels || []).map(item => item.parcel);
+      }
+      return subParcels.filter(p => p.visible !== false);
+    }
+
+    // Định dạng danh sách thửa thành hàng chuẩn 8 cột để xuất / lưu
+    function getFormattedRowsFromParcels(parcelList) {
+      const distMode = document.getElementById('exportDistModeSelect')?.value || 'road';
+      const scopeMode = document.getElementById('exportCenterScopeSelect')?.value || 'per_parcel';
+
+      const overallCenterStr = overallCenterPoint 
+        ? `${overallCenterPoint.lat.toFixed(6)}, ${overallCenterPoint.lng.toFixed(6)}` 
+        : '--';
+      const overallRawKm = (distMode === 'road' && calculatedRouteMetrics.overallRoadKm !== null)
+        ? calculatedRouteMetrics.overallRoadKm
+        : (calculatedRouteMetrics.overallDirectKm || 0);
+      const overallKmRound1 = Math.round(overallRawKm * 10) / 10;
+
+      const rows = [];
+      let totalAreaM2 = 0;
+
+      (parcelList || []).forEach((p) => {
+        if (p.areaM2 === undefined || p.centroidLat === undefined) {
+          cacheParcelGeometry(p);
+        }
+        const areaM2 = p.areaM2 || 0;
+        totalAreaM2 += areaM2;
+        const parcelCenterStr = (p.centroidLat && p.centroidLng) ? `${p.centroidLat.toFixed(6)}, ${p.centroidLng.toFixed(6)}` : '--';
+
+        let pDirectKm = calculatedRouteMetrics.perParcelDirectKm[p.id];
+        if (pDirectKm === undefined && !isNaN(originPoint.lat) && !isNaN(originPoint.lng) && p.centroidLat && p.centroidLng) {
+          const fromPt = turf.point([originPoint.lng, originPoint.lat]);
+          const toPt = turf.point([p.centroidLng, p.centroidLat]);
+          pDirectKm = turf.distance(fromPt, toPt, { units: 'kilometers' });
+          calculatedRouteMetrics.perParcelDirectKm[p.id] = pDirectKm;
+        }
+        const pRawKm = (distMode === 'road')
+          ? getParcelDrivingDistanceKm(p)
+          : (pDirectKm || 0);
+        const parcelKmRound1 = Math.round(pRawKm * 10) / 10;
+
+        const geomStr = JSON.stringify({
+          type: "Polygon",
+          coordinates: [p.coordinates]
+        });
+
+        rows.push({
+          externalId: p.externalId || `__export__.land_parcel_${p.code}`,
+          code: p.code || p.name,
+          diemCanhTac: p.diemCanhTac || "",
+          canBoDiaBan: p.canBoDiaBan || "",
+          geom: geomStr,
+          centerpoint: scopeMode === 'collective_only' ? overallCenterStr : parcelCenterStr,
+          distanceKm: scopeMode === 'collective_only' ? overallKmRound1 : parcelKmRound1,
+          areaM2: areaM2
+        });
+      });
+
+      return rows;
+    }
+
+    // Mở popup modal Chọn Lưu Data
+    function openAdminSaveDataModal() {
+      if (!currentUser || currentUser.role !== 'admin') {
+        showToast("Quyền Quản Trị Viên", "Chức năng 'Chọn Lưu Data' chỉ dành riêng cho tài khoản Quản trị viên (Admin)!", "warning");
+        return;
+      }
+
+      const parcelsToSave = getCurrentFilteredParcels();
+      if (parcelsToSave.length === 0) {
+        showToast("Danh sách trống", "Không có thửa đất nào đang hiển thị/lọc để lưu!", "warning");
+        return;
+      }
+
+      // Cập nhật tóm tắt
+      const badge = document.getElementById('adminSaveDataSummaryBadge');
+      if (badge) badge.innerText = `${parcelsToSave.length} / ${subParcels.length} thửa`;
+
+      const filterInfo = document.getElementById('adminSaveDataFilterInfo');
+      if (filterInfo) {
+        const curCbdb = document.getElementById('filter-cbdb')?.value.trim();
+        const curDm = document.getElementById('filter-diemmia')?.value.trim();
+        let desc = [];
+        if (errorFilterActiveMode === 'geometry') desc.push("Đang lọc thửa sai hình học");
+        else if (errorFilterActiveMode === 'outlier') desc.push("Đang lọc thửa xa tâm");
+        if (curCbdb) desc.push(`CB: ${curCbdb}`);
+        if (curDm) desc.push(`Điểm mía: ${curDm}`);
+        filterInfo.innerText = desc.length > 0 ? desc.join(' • ') : "Toàn bộ danh sách thửa hiện tại";
+      }
+
+      // Đồng bộ danh sách sheet từ adminSheetSelector
+      const adminSel = document.getElementById('adminSheetSelector');
+      const modalSel = document.getElementById('adminSaveTargetSheetSelect');
+      if (adminSel && modalSel && (adminSel.options.length > 1 || (adminSel.options.length === 1 && adminSel.options[0].value !== 'data_admin'))) {
+        modalSel.innerHTML = '';
+        for (let i = 0; i < adminSel.options.length; i++) {
+          const opt = adminSel.options[i];
+          const newOpt = document.createElement('option');
+          newOpt.value = opt.value;
+          newOpt.innerText = opt.innerText;
+          modalSel.appendChild(newOpt);
+        }
+        const optNew = document.createElement('option');
+        optNew.value = '__custom__';
+        optNew.innerText = '+ Nhập tên sheet mới...';
+        modalSel.appendChild(optNew);
+        modalSel.value = adminSel.value || currentUser.dataSheet || 'data_admin';
+      }
+
+      handleAdminTargetSheetSelectChange(modalSel ? modalSel.value : 'data_admin');
+
+      const modal = document.getElementById('adminSaveDataModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAdminSaveDataModal() {
+      const modal = document.getElementById('adminSaveDataModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function handleAdminTargetSheetSelectChange(val) {
+      const box = document.getElementById('adminSaveCustomSheetBox');
+      if (!box) return;
+      if (val === '__custom__') {
+        box.classList.remove('hidden');
+        const inp = document.getElementById('adminSaveCustomSheetInput');
+        if (inp) inp.focus();
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    async function executeAdminSaveData() {
+      if (!currentUser || currentUser.role !== 'admin') {
+        showToast("Quyền hạn", "Chỉ tài khoản Quản trị viên mới được thực hiện lưu!", "error");
+        return;
+      }
+
+      const modalSel = document.getElementById('adminSaveTargetSheetSelect');
+      let targetSheet = modalSel ? modalSel.value : 'data_admin';
+      if (targetSheet === '__custom__') {
+        const customInp = document.getElementById('adminSaveCustomSheetInput');
+        targetSheet = (customInp?.value || '').trim();
+        if (!targetSheet) {
+          showToast("Thiếu tên sheet", "Vui lòng nhập tên sheet mới muốn lưu!", "warning");
+          if (customInp) customInp.focus();
+          return;
+        }
+        if (!targetSheet.startsWith('data_') && targetSheet !== 'data') {
+          targetSheet = 'data_' + targetSheet;
+        }
+      }
+
+      const parcelsToSave = getCurrentFilteredParcels();
+      if (parcelsToSave.length === 0) {
+        showToast("Danh sách trống", "Không có thửa đất nào để lưu!", "warning");
+        return;
+      }
+
+      if (!googleAppsScriptUrl) {
+        await fetchConnectConfigFromSheet();
+      }
+      if (!googleAppsScriptUrl) {
+        showToast("Chưa cấu hình Web App URL", "Vui lòng kiểm tra tab 'connect' trên Google Sheet hoặc cấu hình kết nối.", "error");
+        openGasConfigModal();
+        return;
+      }
+
+      let proceed = true;
+      try {
+        const isIframe = (window.self !== window.top);
+        if (!isIframe) {
+          proceed = confirm(`XÁC NHẬN GHI ĐÈ:\nBạn có chắc chắn muốn ghi đè toàn bộ ${parcelsToSave.length} thửa đang lọc vào sheet "${targetSheet}"?\nDữ liệu cũ trên sheet này sẽ bị thay thế bằng dữ liệu mới.`);
+        }
+      } catch (e) {
+        proceed = true;
+      }
+      if (!proceed) return;
+
+      const btn = document.getElementById('btnAdminConfirmSaveData');
+      const spinner = document.getElementById('adminSaveSpinner');
+      const icon = document.getElementById('adminSaveBtnIcon');
+      const txt = document.getElementById('adminSaveBtnText');
+
+      if (btn) btn.disabled = true;
+      if (spinner) spinner.classList.remove('hidden');
+      if (icon) icon.classList.add('hidden');
+      if (txt) txt.innerText = 'Đang ghi đè dữ liệu...';
+
+      showToast("Đang lưu lên Google Sheet...", `Đang ghi đè ${parcelsToSave.length} thửa vào sheet "${targetSheet}"...`, "info");
+
+      try {
+        const rows = getFormattedRowsFromParcels(parcelsToSave);
+        const payload = {
+          action: "saveParcels",
+          sheet: targetSheet,
+          role: currentUser.role || "admin",
+          email: currentUser.email || "",
+          parcels: rows
+        };
+
+        const res = await fetch(googleAppsScriptUrl, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data && data.success) {
+          showToast("Ghi đè thành công!", data.message || `Đã lưu và ghi đè ${rows.length} thửa vào sheet "${targetSheet}".`, "success");
+          closeAdminSaveDataModal();
+          // Cập nhật lại dropdown danh sách sheet nếu có sheet mới được tạo
+          fetchAndPopulateAdminDataSheets();
+        } else {
+          throw new Error(data.message || "Lưu thất bại!");
+        }
+      } catch (err) {
+        showToast("Lỗi lưu lên Google Sheet", err.message, "error");
+      } finally {
+        if (btn) btn.disabled = false;
+        if (spinner) spinner.classList.add('hidden');
+        if (icon) icon.classList.remove('hidden');
+        if (txt) txt.innerText = 'Xác nhận Lưu Data';
+      }
     }
 
     function openLogoutConfirmModal() {
@@ -6773,6 +6968,7 @@ function jsonResponse(obj) {
       });
 
       syncWorkspacePaddingWithHeader();
+      updateAdminSaveButtonUI();
 
       const passInp = document.getElementById('loginPass');
       if (passInp) passInp.value = '';
