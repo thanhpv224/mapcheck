@@ -926,6 +926,10 @@
                             <input type="checkbox" id="chkShowVertexNumbers" checked onchange="renderEditorAll()" class="accent-emerald-600 w-3.5 h-3.5"> 
                             Hiện số thứ tự đỉnh (1, 2, 3...)
                         </label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-white dark:bg-slate-800 p-1.5 rounded border border-transparent hover:border-slate-200">
+                            <input type="checkbox" id="chkShowNeighborParcels" checked onchange="renderEditorAll()" class="accent-emerald-600 w-3.5 h-3.5"> 
+                            Hiện viền thửa xung quanh (bán kính 500m)
+                        </label>
                     </div>
                 </div>
             </div>
@@ -2176,19 +2180,135 @@
         return;
       }
 
-      // CHẾ ĐỘ SỬA 1 THỬA: Vẽ các thửa khác mờ đi làm nền tham chiếu
-      editorParcels.forEach((parcel, idx) => {
-        if (idx === activeEditIndex) return;
-        const latlngs = parcel.coordinates.map(pt => [pt[1], pt[0]]);
-        L.polygon(latlngs, {
-          color: '#64748b',
-          weight: 1.5,
-          dashArray: '4,4',
-          fillColor: '#64748b',
-          fillOpacity: 0.03,
-          interactive: false
-        }).addTo(editorBackgroundLayer);
-      });
+      // CHẾ ĐỘ SỬA 1 THỬA: Vẽ các thửa xung quanh trong bán kính 500m làm viền mờ xám đứt nét
+      const showNeighbors = document.getElementById('chkShowNeighborParcels') ? document.getElementById('chkShowNeighborParcels').checked : true;
+      const currentParcel = editorParcels[activeEditIndex];
+      if (showNeighbors && currentParcel) {
+        let currentCenter = null;
+        try {
+          if (vertices && vertices.length >= 3) {
+            const ring = vertices.map(v => [v.lng, v.lat]);
+            ring.push([ring[0][0], ring[0][1]]);
+            currentCenter = turf.centroid(turf.polygon([ring]));
+          } else if (currentParcel.coordinates && currentParcel.coordinates.length >= 3) {
+            currentCenter = turf.centroid(turf.polygon([currentParcel.coordinates]));
+          }
+        } catch (e) {
+          const pts = (vertices && vertices.length > 0) ? vertices : (currentParcel.coordinates || []);
+          if (pts.length > 0) {
+            const isLatObj = typeof pts[0].lat === 'number';
+            const avgLng = isLatObj ? pts.reduce((s, p) => s + p.lng, 0) / pts.length : pts.reduce((s, p) => s + p[0], 0) / pts.length;
+            const avgLat = isLatObj ? pts.reduce((s, p) => s + p.lat, 0) / pts.length : pts.reduce((s, p) => s + p[1], 0) / pts.length;
+            currentCenter = turf.point([avgLng, avgLat]);
+          }
+        }
+
+        if (currentCenter) {
+          const cLng = currentCenter.geometry.coordinates[0];
+          const cLat = currentCenter.geometry.coordinates[1];
+
+          // Bounding Box sơ bộ (~600m ~ 0.0055 độ) lọc siêu tốc trên 700 thửa chỉ mất < 0.5ms
+          const DEG_BUFFER = 0.0055;
+          const minLat = cLat - DEG_BUFFER;
+          const maxLat = cLat + DEG_BUFFER;
+          const minLng = cLng - DEG_BUFFER;
+          const maxLng = cLng + DEG_BUFFER;
+
+          const currentKey = currentParcel.id || currentParcel.code || ('active_' + activeEditIndex);
+          const addedKeys = new Set([currentKey]);
+          const neighborParcels = [];
+
+          const checkAndAddNeighbor = (p, sourceKey) => {
+            if (!p || !p.coordinates || p.coordinates.length < 3) return;
+            const key = p.id || p.code || sourceKey;
+            if (addedKeys.has(key)) return;
+            addedKeys.add(key);
+
+            // 1. Kiểm tra nhanh Bounding Box
+            let inBBox = false;
+            for (let i = 0; i < p.coordinates.length; i++) {
+              const pt = p.coordinates[i];
+              if (pt[1] >= minLat && pt[1] <= maxLat && pt[0] >= minLng && pt[0] <= maxLng) {
+                inBBox = true;
+                break;
+              }
+            }
+            if (!inBBox) return;
+
+            // 2. Kiểm tra chính xác bán kính 500m (0.5 km) tính từ tâm thửa đang sửa
+            let candCenter;
+            if (p.centroidLng && p.centroidLat) {
+              candCenter = turf.point([p.centroidLng, p.centroidLat]);
+            } else {
+              try {
+                candCenter = turf.centroid(turf.polygon([p.coordinates]));
+              } catch (err) {
+                candCenter = turf.point(p.coordinates[0]);
+              }
+            }
+
+            const centerDistKm = turf.distance(currentCenter, candCenter, { units: 'kilometers' });
+            if (centerDistKm <= 0.5) {
+              neighborParcels.push(p);
+              return;
+            }
+
+            // Nếu tâm ngoài 500m nhưng có đỉnh nào nằm trong bán kính 500m
+            const hasVertexWithin500m = p.coordinates.some(pt => {
+              return turf.distance(currentCenter, turf.point(pt), { units: 'kilometers' }) <= 0.5;
+            });
+            if (hasVertexWithin500m) {
+              neighborParcels.push(p);
+            }
+          };
+
+          // Lọc từ editorParcels (nếu có các thửa khác cùng nạp trong Chức năng 2)
+          editorParcels.forEach((p, idx) => {
+            if (idx !== activeEditIndex) checkAndAddNeighbor(p, 'editor_' + idx);
+          });
+
+          // Lọc từ subParcels (toàn bộ kho thửa đã nạp từ Sheet / Excel)
+          if (Array.isArray(subParcels)) {
+            subParcels.forEach((p, idx) => {
+              if (editingSubParcelIndex !== null && idx === editingSubParcelIndex) return;
+              checkAndAddNeighbor(p, 'sub_' + idx);
+            });
+          }
+
+          // Vẽ các thửa lân cận trong bán kính 500m: viền xám mờ đứt nét
+          neighborParcels.forEach(p => {
+            const latlngs = p.coordinates.map(pt => [pt[1], pt[0]]);
+            L.polygon(latlngs, {
+              color: '#64748b',
+              weight: 1.5,
+              dashArray: '4,4',
+              fillColor: '#64748b',
+              fillOpacity: 0.03,
+              interactive: false
+            }).addTo(editorBackgroundLayer);
+
+            // Nhãn mã thửa nhỏ mờ ở tâm để hỗ trợ định hướng khi nắn ranh giới
+            let cCoord = null;
+            if (p.centroidLng && p.centroidLat) {
+              cCoord = [p.centroidLat, p.centroidLng];
+            } else {
+              try {
+                const c = turf.centroid(turf.polygon([p.coordinates])).geometry.coordinates;
+                cCoord = [c[1], c[0]];
+              } catch (e) {}
+            }
+            if (cCoord && (p.code || p.name)) {
+              const codeLabel = L.divIcon({
+                className: 'flex items-center justify-center',
+                html: `<div class="text-[9px] font-mono font-semibold text-slate-400/80 bg-slate-900/40 px-1 py-0.2 rounded border border-slate-600/30 whitespace-nowrap pointer-events-none select-none">${p.code || p.name}</div>`,
+                iconSize: [60, 16],
+                iconAnchor: [30, 8]
+              });
+              L.marker(cCoord, { icon: codeLabel, interactive: false }).addTo(editorBackgroundLayer);
+            }
+          });
+        }
+      }
 
       if (vertices.length < 3) return;
 
