@@ -976,9 +976,13 @@
               <input type="checkbox" id="chkShowDiemMia" checked onchange="updateVisibleParcelLabels()" class="w-3.5 h-3.5 accent-amber-500 rounded">
               <span>Hiện Điểm mía</span>
             </label>
+            <label class="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 cursor-pointer" title="Đánh dấu màu tất cả các thửa theo từng Cán bộ địa bàn quản lý">
+              <input type="checkbox" id="chkGroupByCBDB" onchange="toggleColorGroupByCBDB()" class="w-3.5 h-3.5 accent-indigo-600 rounded">
+              <span>Nhóm CBĐB</span>
+            </label>
             <div class="flex items-center justify-between gap-1 text-[10px] text-slate-500">
               <span>Nền:</span>
-              <input type="range" id="parcelLabelOpacitySlider" min="0" max="90" value="10" oninput="updateParcelLabelOpacity(this.value)" class="w-16 accent-emerald-600 cursor-pointer" title="Độ trong suốt nền tên thửa">
+              <input type="range" id="parcelLabelOpacitySlider" min="0" max="100" value="10" oninput="updateParcelLabelOpacity(this.value)" class="w-16 accent-emerald-600 cursor-pointer" title="Độ mờ nền thửa và thông tin thửa">
               <span id="parcelLabelOpacityValue" class="font-mono font-bold text-emerald-600 dark:text-emerald-400 w-6 text-right">10%</span>
             </div>
           </div>
@@ -1783,6 +1787,66 @@
       return diemMiaColorMap[cleanKey];
     }
 
+    // Bộ nhớ đệm màu theo tên Cán Bộ Địa Bàn (đảm bảo cùng cán bộ luôn có cùng màu duy nhất)
+    const canBoDiaBanColorMap = {};
+
+    function getColorForCanBoDiaBan(name) {
+      if (!name || typeof name !== 'string' || !name.trim()) {
+        return '#94a3b8'; // Màu xám trung tính cho thửa chưa gán cán bộ
+      }
+      const cleanKey = name.trim().toLowerCase();
+      if (!canBoDiaBanColorMap[cleanKey]) {
+        const count = Object.keys(canBoDiaBanColorMap).length;
+        canBoDiaBanColorMap[cleanKey] = DIEM_MIA_PALETTE[count % DIEM_MIA_PALETTE.length];
+      }
+      return canBoDiaBanColorMap[cleanKey];
+    }
+
+    // Lấy màu hiện hành của thửa theo chế độ lọc đang chọn (Nhóm CBĐB hoặc Nhóm Điểm mía)
+    function getParcelActiveColor(parcel) {
+      if (!parcel) return '#10b981';
+      const isGroupCBDB = document.getElementById('chkGroupByCBDB') ? document.getElementById('chkGroupByCBDB').checked : false;
+      if (isGroupCBDB) {
+        return getColorForCanBoDiaBan(parcel.canBoDiaBan);
+      }
+      return getColorForDiemCanhTac(parcel.diemCanhTac);
+    }
+
+    function toggleColorGroupByCBDB() {
+      const isGroupCBDB = document.getElementById('chkGroupByCBDB')?.checked;
+
+      // 1. Cập nhật lại màu sắc cho tất cả các thửa
+      if (Array.isArray(subParcels)) {
+        subParcels.forEach(p => {
+          p.color = getParcelActiveColor(p);
+        });
+      }
+
+      if (Array.isArray(editorParcels)) {
+        editorParcels.forEach(p => {
+          p.color = getParcelActiveColor(p);
+        });
+      }
+
+      // 2. Vẽ lại lớp đa giác trên bản đồ
+      if (activeModule === 'multi') {
+        if (typeof renderMultiAll === 'function') renderMultiAll(false);
+      } else {
+        if (typeof renderEditorAll === 'function') renderEditorAll();
+      }
+
+      // 3. Cập nhật nhãn bản đồ và danh sách bên trái
+      if (typeof updateVisibleParcelLabels === 'function') updateVisibleParcelLabels();
+      if (typeof renderSubParcelsSidebarList === 'function') renderSubParcelsSidebarList();
+      if (typeof updateExcelPreviewTable === 'function') updateExcelPreviewTable();
+
+      if (isGroupCBDB) {
+        showToast("Đã bật Nhóm CBĐB", "Tất cả thửa cùng một Cán bộ địa bàn được tô đồng bộ cùng một màu.", "info");
+      } else {
+        showToast("Đã tắt Nhóm CBĐB", "Đã trả về màu sắc theo từng Điểm mía như ban đầu.", "info");
+      }
+    }
+
     // Trạng thái chung (Chức năng 1: 'multi', Chức năng 2: 'editor')
     let activeModule = 'multi';
     let map;
@@ -1829,6 +1893,7 @@
     let myLocationLayer = null;
     let isIframeGpsBlocked = false;
     let parcelLabelBgOpacity = 0.10;
+    let commonParcelFillOpacity = 0.10;
     let excelPreviewCurrentPage = 1;
     const PREVIEW_PAGE_SIZE = 50;
 
@@ -2148,7 +2213,7 @@
             color: parcel.color || '#10b981',
             weight: 2.5,
             fillColor: parcel.color || '#10b981',
-            fillOpacity: 0.10
+            fillOpacity: commonParcelFillOpacity
           }).addTo(polygonLayer);
 
           poly.on('click', function (e) {
@@ -2166,7 +2231,7 @@
           const areaM2 = turf.area(turf.polygon([parcel.coordinates]));
           const labelIcon = L.divIcon({
             className: 'flex items-center justify-center',
-            html: `<div class="parcel-label" style="background: rgba(15, 23, 42, 0.10);">
+            html: `<div class="parcel-label" style="background: rgba(15, 23, 42, ${parcelLabelBgOpacity});">
                      ${parcel.isEdited ? `<div class="text-[8.5px] bg-amber-500 text-white font-bold px-1 rounded inline-block mb-0.5"><i class="fa-solid fa-check"></i> Đã sửa</div>` : ''}
                      ${parcel.diemCanhTac ? `<div class="text-[9px] text-amber-300 font-semibold leading-tight">${parcel.diemCanhTac}</div>` : ''}
                      <div class="tracking-tight">${parcel.code || parcel.name}</div>
@@ -2868,6 +2933,7 @@
       const op = parseInt(document.getElementById('polyOpacitySlider').value, 10);
       polyStyle.fillOpacity = op / 100;
       document.getElementById('lblOpacityVal').innerText = op + '%';
+      updateParcelLabelOpacity(op);
       renderEditorAll();
     }
 
@@ -3596,8 +3662,11 @@
           const areaM2 = parcel.areaM2 || 0;
           let labelInnerHtml = '';
 
-          // 1. Dòng Điểm mía (màu vàng hổ phách nổi bật)
-          if (showDiemMia && parcel.diemCanhTac) {
+          // 1. Dòng Tiêu đề (Cán bộ địa bàn khi bật Nhóm CBĐB, hoặc Điểm mía khi bình thường)
+          const isGroupCBDB = document.getElementById('chkGroupByCBDB') ? document.getElementById('chkGroupByCBDB').checked : false;
+          if (isGroupCBDB) {
+            labelInnerHtml += `<div class="text-[9.5px] text-cyan-300 font-bold leading-tight truncate max-w-[140px] flex items-center justify-center gap-1"><i class="fa-solid fa-user-tie text-[8px]"></i><span>${parcel.canBoDiaBan || 'Chưa gán CB'}</span></div>`;
+          } else if (showDiemMia && parcel.diemCanhTac) {
             labelInnerHtml += `<div class="text-[9.5px] text-amber-300 font-bold leading-tight truncate max-w-[140px]">${parcel.diemCanhTac}</div>`;
           }
 
@@ -3633,7 +3702,7 @@
     function loadSampleSubParcels(fitMap = true) {
       subParcels = JSON.parse(JSON.stringify(LAND_PARCEL_XLS_DATA));
       subParcels.forEach(p => {
-        p.color = getColorForDiemCanhTac(p.diemCanhTac);
+        p.color = getParcelActiveColor(p);
         cacheParcelGeometry(p);
       });
       populateFilters();
@@ -3686,7 +3755,7 @@
         );
         calculatedRouteMetrics.perParcelDirectKm[parcel.id] = directKm;
 
-        const pColor = getColorForDiemCanhTac(parcel.diemCanhTac);
+        const pColor = getParcelActiveColor(parcel);
         parcel.color = pColor;
 
         const latlngs = parcel.coordinates.map(pt => [pt[1], pt[0]]);
@@ -3694,7 +3763,7 @@
           color: pColor,
           weight: 2,
           fillColor: pColor,
-          fillOpacity: 0.10
+          fillOpacity: commonParcelFillOpacity
         }).addTo(subParcelsLayer);
 
         // Lazy popup: chỉ dựng HTML khi người dùng click vào thửa (thu gọn 20%)
@@ -3788,10 +3857,45 @@
 
     function updateParcelLabelOpacity(val) {
       const pct = parseInt(val, 10);
-      parcelLabelBgOpacity = pct / 100;
+      const opacity = pct / 100;
+      parcelLabelBgOpacity = opacity;
+      commonParcelFillOpacity = opacity;
+
+      // 1. Cập nhật nhãn và thanh trượt trên menu nổi góc phải bản đồ
       const lbl = document.getElementById('parcelLabelOpacityValue');
       if (lbl) lbl.innerText = pct + '%';
-      updateVisibleParcelLabels();
+      const slider = document.getElementById('parcelLabelOpacitySlider');
+      if (slider && parseInt(slider.value, 10) !== pct) slider.value = pct;
+
+      // 2. Cập nhật ngay style nền của tất cả nhãn thông tin thửa (.parcel-label) đang hiển thị
+      document.querySelectorAll('.parcel-label').forEach(el => {
+        el.style.background = `rgba(15, 23, 42, ${opacity})`;
+      });
+
+      // 3. Cập nhật ngay độ mờ nền đa giác thửa đất ở Chức năng 1 (subParcelsLayer)
+      if (subParcelsLayer) {
+        subParcelsLayer.eachLayer(layer => {
+          if (layer && typeof layer.setStyle === 'function') {
+            layer.setStyle({ fillOpacity: opacity });
+          }
+        });
+      }
+
+      // 4. Đồng bộ với Chức năng 2 (polygonLayer, polyStyle & thanh trượt trong Sidebar)
+      if (typeof polyStyle !== 'undefined') {
+        polyStyle.fillOpacity = opacity;
+        const polySlider = document.getElementById('polyOpacitySlider');
+        const polyLbl = document.getElementById('lblOpacityVal');
+        if (polySlider && parseInt(polySlider.value, 10) !== pct) polySlider.value = pct;
+        if (polyLbl) polyLbl.innerText = pct + '%';
+      }
+      if (polygonLayer) {
+        polygonLayer.eachLayer(layer => {
+          if (layer && typeof layer.setStyle === 'function') {
+            layer.setStyle({ fillOpacity: opacity });
+          }
+        });
+      }
     }
 
     let userGpsLocation = null;
@@ -3920,6 +4024,11 @@
         item.className = isEdited
           ? "p-2.5 rounded-xl border-2 border-amber-400 dark:border-amber-500 bg-amber-50/90 dark:bg-amber-950/40 shadow-sm flex items-center justify-between gap-2 hover:border-amber-500 transition"
           : "p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/90 shadow-sm flex items-center justify-between gap-2 hover:border-rose-400 transition";
+        const isGroupCBDB = document.getElementById('chkGroupByCBDB') ? document.getElementById('chkGroupByCBDB').checked : false;
+        const infoPrefix = isGroupCBDB
+          ? (parcel.canBoDiaBan ? `<span class="text-indigo-600 dark:text-indigo-400 font-bold">CB: ${parcel.canBoDiaBan}</span> • ` : (parcel.diemCanhTac ? parcel.diemCanhTac + ' • ' : ''))
+          : (parcel.diemCanhTac ? parcel.diemCanhTac + ' • ' : '');
+
         item.innerHTML = `
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <input type="checkbox" ${parcel.visible ? 'checked' : ''} onchange="toggleSubParcelVisibility(${idx})" class="w-4 h-4 accent-rose-600 rounded cursor-pointer flex-shrink-0">
@@ -3933,7 +4042,7 @@
                 </span>
               </div>
               <div class="text-[10px] font-mono ${isEdited ? 'text-amber-800 dark:text-amber-300/80' : 'text-slate-500 dark:text-slate-400'} mt-0.5 truncate">
-                ${parcel.diemCanhTac ? parcel.diemCanhTac + ' • ' : ''}Cột E: ${centroid[1].toFixed(6)}, ${centroid[0].toFixed(6)} • ${areaM2.toLocaleString('vi-VN', { maximumFractionDigits: 0 })} m²
+                ${infoPrefix}Cột E: ${centroid[1].toFixed(6)}, ${centroid[0].toFixed(6)} • ${areaM2.toLocaleString('vi-VN', { maximumFractionDigits: 0 })} m²
               </div>
             </div>
           </div>
@@ -4981,7 +5090,7 @@
           tr.className = "text-slate-700 dark:text-slate-200 hover:bg-rose-50/70 dark:hover:bg-rose-950/30 transition";
           tr.innerHTML = `
             <td class="py-1.5 px-2 truncate max-w-[100px] font-semibold text-rose-600 dark:text-rose-400 font-mono">${p.code || ''}</td>
-            <td class="py-1.5 px-2 truncate max-w-[100px]">${p.diemCanhTac ? `<span class="inline-block w-2 h-2 rounded-full mr-1 align-middle" style="background:${getColorForDiemCanhTac(p.diemCanhTac)}"></span>` : ''}<span>${p.diemCanhTac || ''}</span></td>
+            <td class="py-1.5 px-2 truncate max-w-[100px]">${p.diemCanhTac ? `<span class="inline-block w-2 h-2 rounded-full mr-1 align-middle" style="background:${p.color || getParcelActiveColor(p)}"></span>` : ''}<span>${p.diemCanhTac || ''}</span></td>
             <td class="py-1.5 px-2 truncate max-w-[90px] text-slate-500">${p.canBoDiaBan || ''}</td>
             <td class="py-1.5 px-2 max-w-[160px]">
               <div class="font-bold text-rose-600 truncate" title="${item.details}">${item.reason}</div>
@@ -5082,7 +5191,7 @@
           : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60";
         tr.innerHTML = `
           <td class="py-1.5 px-2 truncate max-w-[110px] font-semibold">${isCollective ? '★ ' + r.code : r.code}</td>
-          <td class="py-1.5 px-2 truncate max-w-[110px]">${r.diemCanhTac ? `<span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 align-middle shadow-xs" style="background:${getColorForDiemCanhTac(r.diemCanhTac)}"></span>` : ''}<span>${r.diemCanhTac || ''}</span></td>
+          <td class="py-1.5 px-2 truncate max-w-[110px]">${r.diemCanhTac ? `<span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 align-middle shadow-xs" style="background:${r.color || getParcelActiveColor(r)}"></span>` : ''}<span>${r.diemCanhTac || ''}</span></td>
           <td class="py-1.5 px-2 truncate max-w-[90px]">${r.canBoDiaBan || ''}</td>
           <td class="py-1.5 px-2 text-right font-extrabold text-emerald-600 dark:text-emerald-400">${Number(r.distanceKm).toFixed(1)}</td>
           <td class="py-1.5 px-2 text-right font-extrabold text-teal-600 dark:text-teal-400">${Number(r.areaM2).toFixed(1)}</td>
@@ -5303,7 +5412,7 @@
                 name: code,
                 diemCanhTac: diemCanhTac,
                 canBoDiaBan: canBoDiaBan,
-                color: getColorForDiemCanhTac(diemCanhTac),
+                color: getParcelActiveColor({ diemCanhTac, canBoDiaBan }),
                 visible: true,
                 coordinates: ring
               };
@@ -6896,7 +7005,7 @@ function jsonResponse(obj) {
                 name: p.code || `THUA_DEMO_${idx + 1}`,
                 diemCanhTac: p.diemCanhTac || '',
                 canBoDiaBan: p.canBoDiaBan || '',
-                color: getColorForDiemCanhTac(p.diemCanhTac),
+                color: getParcelActiveColor(p),
                 visible: true,
                 coordinates: ring
               };
@@ -7632,7 +7741,7 @@ function jsonResponse(obj) {
                 name: p.code || `THUA_${idx + 1}`,
                 diemCanhTac: p.diemCanhTac || '',
                 canBoDiaBan: p.canBoDiaBan || '',
-                color: getColorForDiemCanhTac(p.diemCanhTac),
+                color: getParcelActiveColor(p),
                 visible: true,
                 coordinates: ring
               };
